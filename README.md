@@ -1,9 +1,9 @@
 # PhotoSlice
 
-## 主要文件
+## 主要文件夹
 
-- ImageTool
---- Manager
---- Controller
---- View
+### ImageTool
+- Manager
+- Controller
+- View
 
