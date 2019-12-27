@@ -32,6 +32,12 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
         collectionView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
     }
     
+    //MARK: override
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        
+        return .lightContent
+    }
+    
     //MARK: UISet
     override func configUISet() {
         super.configUISet()
@@ -55,7 +61,8 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
             }
         }
         
-        
+        collectionView.backgroundColor = .black
+        self.navigationController?.navigationBar.set(backgroundColor: .black, tintColor: .white, isShowShadow: false)
     }
     
     //MARK: delegate & dataSource
@@ -74,7 +81,16 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
     
     @objc private func saveImage(image : UIImage, didFinishSavingWithError error : NSError?, contextInfo : AnyObject) {
         
+        guard let err = error else {
+            
+            PNProgressHUD.present(with: "保存图片成功", presentType: .popup, font: nil, backgroundColor: UIColor.init(white: 1, alpha: 0.7), textColor: .black, in: self.view)
+            
+            self.navigationController?.setViewControllers([self.navigationController!.viewControllers.first!], animated: true)
+            
+            return
+        }
         
+        PNProgressHUD.present(with: err.localizedFailureReason! as NSString, presentType: .popup, font: nil, backgroundColor: UIColor.init(white: 1, alpha: 0.7), textColor: .black, in: self.view)
     }
     
     //MARK:`deinit`()oc

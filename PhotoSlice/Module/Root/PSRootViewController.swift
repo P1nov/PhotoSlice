@@ -37,19 +37,19 @@ extension PSRootViewController {
         self.tabBar.isHidden = false
         
         let homeController = PSHomePageViewController()
-        let homeNav = UINavigationController.init(rootViewController: homeController)
+        let homeNav = BaseNavigationController.init(rootViewController: homeController)
         homeNav.tabBarItem = UITabBarItem.init(title: "", image: UIImage(named: "home_unselected"), selectedImage: UIImage(named: "home_selected"))
         
         let homeController1 = PSHomePageViewController()
-        let homeNav1 = UINavigationController.init(rootViewController: homeController1)
+        let homeNav1 = BaseNavigationController.init(rootViewController: homeController1)
         homeNav1.tabBarItem = UITabBarItem.init(title: "", image: UIImage(named: "safari_unselected"), selectedImage: UIImage(named: "safari_selected"))
         
         let homeController2 = PSHomePageViewController()
-        let homeNav2 = UINavigationController.init(rootViewController: homeController2)
+        let homeNav2 = BaseNavigationController.init(rootViewController: homeController2)
         homeNav2.tabBarItem = UITabBarItem.init(title: "", image: UIImage(named: "prize_unselected"), selectedImage: UIImage(named: "prize_selected"))
         
         let homeController3 = PSHomePageViewController()
-        let homeNav3 = UINavigationController.init(rootViewController: homeController3)
+        let homeNav3 = BaseNavigationController.init(rootViewController: homeController3)
         homeNav3.tabBarItem = UITabBarItem.init(title: "", image: UIImage(named: "mine_unselected"), selectedImage: UIImage(named: "mine_selected"))
         
         self.viewControllers = [homeNav, homeNav1, homeNav2, homeNav3]
@@ -74,7 +74,7 @@ extension PSRootViewController : PSRootTabBarDelegate, PSOperationViewDelegate {
         operationView.dismiss()
         
         let controller = LongImageSliceViewController()
-        let nav = UINavigationController.init(rootViewController: controller)
+        let nav = BaseNavigationController.init(rootViewController: controller)
         
         self.present(nav, animated: true, completion: nil)
     }
@@ -88,7 +88,7 @@ extension NSObject {
         
         let loginViewController = PSLoginViewController()
         
-        let nav = UINavigationController.init(rootViewController: loginViewController)
+        let nav = BaseNavigationController.init(rootViewController: loginViewController)
         
         controller?.present(nav, animated: true, completion: nil)
     }

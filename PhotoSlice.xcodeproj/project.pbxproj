@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		045C5C2323B5E1750029E4A7 /* LSDMidIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045C5C2223B5E1750029E4A7 /* LSDMidIndicatorView.swift */; };
+		045C5C2523B5E1DC0029E4A7 /* LSDIndicatorCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045C5C2423B5E1DC0029E4A7 /* LSDIndicatorCustom.swift */; };
+		045C5C2723B5F4220029E4A7 /* PNProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045C5C2623B5F4220029E4A7 /* PNProgressHUD.swift */; };
 		046E1D2923B59A19007A08DA /* PSOperationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2823B59A19007A08DA /* PSOperationContentView.swift */; };
 		046E1D2B23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */; };
+		046E1D2D23B5DAF0007A08DA /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2C23B5DAF0007A08DA /* BaseNavigationController.swift */; };
 		048B3E6423B48A160005EF26 /* PSImageHandleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6323B48A160005EF26 /* PSImageHandleManager.swift */; };
 		048B3E6623B490A90005EF26 /* PSUserAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6523B490A90005EF26 /* PSUserAlbumViewController.swift */; };
 		048B3E6B23B494750005EF26 /* LongImageSliceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6A23B494750005EF26 /* LongImageSliceViewController.swift */; };
@@ -62,8 +66,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		045C5C2223B5E1750029E4A7 /* LSDMidIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LSDMidIndicatorView.swift; sourceTree = "<group>"; };
+		045C5C2423B5E1DC0029E4A7 /* LSDIndicatorCustom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LSDIndicatorCustom.swift; sourceTree = "<group>"; };
+		045C5C2623B5F4220029E4A7 /* PNProgressHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNProgressHUD.swift; sourceTree = "<group>"; };
 		046E1D2823B59A19007A08DA /* PSOperationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSOperationContentView.swift; sourceTree = "<group>"; };
 		046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSLongImageSliceCompleteCollectionViewCell.swift; sourceTree = "<group>"; };
+		046E1D2C23B5DAF0007A08DA /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 		048B3E6323B48A160005EF26 /* PSImageHandleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSImageHandleManager.swift; sourceTree = "<group>"; };
 		048B3E6523B490A90005EF26 /* PSUserAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSUserAlbumViewController.swift; sourceTree = "<group>"; };
 		048B3E6A23B494750005EF26 /* LongImageSliceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongImageSliceViewController.swift; sourceTree = "<group>"; };
@@ -139,6 +147,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		045C5C2123B5E1650029E4A7 /* PSAlert */ = {
+			isa = PBXGroup;
+			children = (
+				045C5C2623B5F4220029E4A7 /* PNProgressHUD.swift */,
+				045C5C2423B5E1DC0029E4A7 /* LSDIndicatorCustom.swift */,
+				045C5C2223B5E1750029E4A7 /* LSDMidIndicatorView.swift */,
+			);
+			path = PSAlert;
+			sourceTree = "<group>";
+		};
 		048B3E5E23B489970005EF26 /* ImageTool */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,6 +337,7 @@
 				04FC198423B312CC00F511CA /* BaseViewController.swift */,
 				04FC199923B3386E00F511CA /* BaseCollectionViewController.swift */,
 				04FC199B23B33A3000F511CA /* BaseTableViewController.swift */,
+				046E1D2C23B5DAF0007A08DA /* BaseNavigationController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -388,6 +407,7 @@
 		04FC19AA23B3671000F511CA /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				045C5C2123B5E1650029E4A7 /* PSAlert */,
 				04FC19AB23B3671700F511CA /* Presentation */,
 			);
 			path = Tool;
@@ -667,10 +687,12 @@
 				046E1D2923B59A19007A08DA /* PSOperationContentView.swift in Sources */,
 				04FC19A923B3566600F511CA /* PSRootTabBar.swift in Sources */,
 				046E1D2B23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift in Sources */,
+				045C5C2523B5E1DC0029E4A7 /* LSDIndicatorCustom.swift in Sources */,
 				04FC19B123B36E4C00F511CA /* PSOperationView.swift in Sources */,
 				04FC199A23B3386E00F511CA /* BaseCollectionViewController.swift in Sources */,
 				04FC199223B3330600F511CA /* UIViewController+Extension.swift in Sources */,
 				04FC199C23B33A3000F511CA /* BaseTableViewController.swift in Sources */,
+				046E1D2D23B5DAF0007A08DA /* BaseNavigationController.swift in Sources */,
 				0497151823B4A94E005F1D13 /* PSLongImageSliceCompletedViewController.swift in Sources */,
 				048B3E6B23B494750005EF26 /* LongImageSliceViewController.swift in Sources */,
 				04FC199E23B33B3E00F511CA /* PSHomePageViewController.swift in Sources */,
@@ -684,12 +706,14 @@
 				0497151223B49BBB005F1D13 /* PSUserPhotosViewController.swift in Sources */,
 				048B3E6423B48A160005EF26 /* PSImageHandleManager.swift in Sources */,
 				04FC19AD23B3674700F511CA /* YDPresentationController.swift in Sources */,
+				045C5C2323B5E1750029E4A7 /* LSDMidIndicatorView.swift in Sources */,
 				04FC195123B3115D00F511CA /* SceneDelegate.swift in Sources */,
 				04FC198C23B3140500F511CA /* UIImage+Extension.swift in Sources */,
 				04FC19A223B33E3800F511CA /* UIColor+Extension.swift in Sources */,
 				0497151423B49BD7005F1D13 /* PSUserPhotoCollectionViewCell.swift in Sources */,
 				04FC198823B3139700F511CA /* UINavigationBar+Extension.swift in Sources */,
 				04FC199023B3161B00F511CA /* PSRootViewController.swift in Sources */,
+				045C5C2723B5F4220029E4A7 /* PNProgressHUD.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -65,6 +65,36 @@ class PSImageHandleManager: NSObject {
         return finalImage!
     }
     
+    func getRealImageFromAssets(album : PHAssetCollection, completion : @escaping (_ images : [UIImage]) -> Void) {
+        
+        let assets = self.getPhotosFromAlbum(album: album)
+        
+        var images : [UIImage] = []
+        
+        for index in 0 ..< assets.count {
+            
+            PHImageManager.default().requestImageData(for: assets.object(at: index), options: nil) { (imageData, string, orientation, userInfo) in
+                
+                if imageData != nil {
+                    
+                    autoreleasepool {
+                        
+                        let image = UIImage.init(data: imageData!)
+                        
+                        images.append(image!)
+                    }
+                    
+                }
+                
+                if index == assets.count - 1 {
+                    
+                    completion(images)
+                }
+            }
+        }
+        
+    }
+    
     func sliceImage(with images : [UIImage], completion : (_ finalImage : UIImage) -> Void) {
         
         var height : CGFloat = 0.0

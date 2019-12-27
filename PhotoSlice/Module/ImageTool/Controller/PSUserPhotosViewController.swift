@@ -18,6 +18,8 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     private var photos : PHFetchResult<PHAsset>?
     
     private var selectImages : [UIImage]? = []
+    
+    var imageRequeseOptions = PHImageRequestOptions()
 
     //MARK: lazyLoad
     
@@ -47,6 +49,8 @@ class PSUserPhotosViewController: BaseCollectionViewController {
         
         photos = PSImageHandleManager.shared.getPhotosFromAlbum(album: album!)
         
+        imageRequeseOptions.isSynchronous = true
+        
         collectionView.reloadData()
         
     }
@@ -61,22 +65,26 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     //MARK: action
     @objc private func selectImage(button : UIButton) {
         
-        let indexPath = IndexPath.init(item: button.tag, section: 0)
+        var selectedImage : UIImage?
         
-        let cell = collectionView.cellForItem(at: indexPath) as! PSUserPhotoCollectionViewCell
-        
-        if button.isSelected {
+        PHImageManager.default().requestImageData(for: photos!.object(at: button.tag), options: nil) { (imageData, string, orientation, userInfo) in
             
-            selectImages?.removeAll(where: { (image) -> Bool in
+            selectedImage = UIImage(data: imageData!)
+            
+            if button.isSelected {
                 
-                return image.isEqual(cell.imageView.image)
-            })
-        }else {
+                self.selectImages?.removeAll(where: { (image) -> Bool in
+                    
+                    return image.isEqual(selectedImage!)
+                })
+            }else {
+                self.selectImages?.append(selectedImage!)
+            }
             
-            selectImages?.append(cell.imageView.image!)
+            button.isSelected = !button.isSelected
+            
         }
-        
-        button.isSelected = !button.isSelected
+
     }
     
     @objc private func completeImageSelect() {
@@ -115,16 +123,14 @@ extension PSUserPhotosViewController {
         
         DispatchQueue.global().async {
             
-            PHImageManager.default().requestImageData(for: self.photos!.object(at: indexPath.row), options: nil) { (imageData, string, orientation, info) in
+            PHImageManager.default().requestImage(for: self.photos!.object(at: indexPath.row), targetSize: .zero, contentMode: .aspectFill, options: self.imageRequeseOptions) { (image, userInfo) in
                 
                 DispatchQueue.main.async {
                     
-                    if imageData != nil {
-                        
-                        cell.imageView.image = UIImage.init(data: imageData!)
-                    }
+                    cell.imageView.image = image
                 }
             }
+            
         }
         
         cell.selectBtn.tag = indexPath.row

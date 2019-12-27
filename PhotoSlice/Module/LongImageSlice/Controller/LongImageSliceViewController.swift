@@ -24,7 +24,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
     var lastImage : UIImage?
 
     //MARK: lazyLoad
-    var selectedImages : [UIImage]?
+    var selectedImages : [UIImage]? = []
     
     lazy var completeButton: UIButton = {
         
@@ -42,6 +42,14 @@ class LongImageSliceViewController: BaseCollectionViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
+        
+        self.navigationController?.navigationBar.set(backgroundColor: .white, tintColor: .black, isShowShadow: false)
         
     }
     
@@ -120,10 +128,17 @@ class LongImageSliceViewController: BaseCollectionViewController {
     
     @objc private func completeSliceImage() {
         
-        let controller = PSLongImageSliceCompletedViewController()
-        controller.images = selectedImages
+        if selectedImages!.count > 0 {
+            
+            let controller = PSLongImageSliceCompletedViewController()
+            controller.images = selectedImages
+            
+            self.navigationController?.pushViewController(controller, animated: true)
+        }else {
+            
+            PNProgressHUD.present(with: "您还未选择图片", presentType: .popup, font: nil, backgroundColor: UIColor.init(white: 1, alpha: 0.7), textColor: .black, in: self.view)
+        }
         
-        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     @objc private func handle(longPress : UILongPressGestureRecognizer) {
@@ -168,10 +183,13 @@ class LongImageSliceViewController: BaseCollectionViewController {
             
             changedCell = (collectionView.cellForItem(at: changedIndexPath!) as! PSLongImageSliceCollectionViewCell)
             
-            
-            
             changedCell?.contentView.layer.borderWidth = Scale(2)
             changedCell?.contentView.layer.borderColor = UIColor(rgb: 0xFF4B32).cgColor
+            
+            if collectionView.contentOffset.y < collectionView.contentSize.height && longPress.location(in: self.collectionView).y >= collectionView.frame.height - 30 {
+                
+                collectionView.setContentOffset(CGPoint(x: 0, y: collectionView.contentOffset.y + 30), animated: true)
+            }
             
             break
         case .ended:
@@ -194,6 +212,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
                 
                 let endCell = self.collectionView.cellForItem(at: endIndexPath!) as! PSLongImageSliceCollectionViewCell
                 endCell.imageView.image = self.selectedImages![endIndexPath!.item]
+                endCell.contentView.layer.borderWidth = 0
                 
             }
             

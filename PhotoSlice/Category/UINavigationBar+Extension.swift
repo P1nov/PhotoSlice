@@ -13,6 +13,7 @@ extension UINavigationBar {
     func set(backgroundColor : UIColor, tintColor : UIColor, isShowShadow : Bool) {
         
         self.setBackgroundImage(UIImage.image(with: backgroundColor), for: UIBarPosition.any, barMetrics: UIBarMetrics.default)
+        self.tintColor = tintColor
         
         if !isShowShadow {
             
