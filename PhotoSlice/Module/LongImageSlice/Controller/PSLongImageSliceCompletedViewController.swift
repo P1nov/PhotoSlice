@@ -83,9 +83,9 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
         
         guard let err = error else {
             
-            PNProgressHUD.present(with: "保存图片成功", presentType: .popup, font: nil, backgroundColor: UIColor.init(white: 1, alpha: 0.7), textColor: .black, in: self.view)
+            PNProgressHUD.present(with: "保存图片成功", presentType: .popup, font: UIFont.systemFont(ofSize: 14.0, weight: .medium), backgroundColor: UIColor(rgb: 0x19C87D), textColor: .white, in: nil)
             
-            self.navigationController?.setViewControllers([self.navigationController!.viewControllers.first!], animated: true)
+//            self.navigationController?.setViewControllers([self.navigationController!.viewControllers.first!], animated: true)
             
             return
         }

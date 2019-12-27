@@ -136,7 +136,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
             self.navigationController?.pushViewController(controller, animated: true)
         }else {
             
-            PNProgressHUD.present(with: "您还未选择图片", presentType: .popup, font: nil, backgroundColor: UIColor.init(white: 1, alpha: 0.7), textColor: .black, in: self.view)
+            PNProgressHUD.present(with: "您还未选择图片", presentType: .fromTop, font: UIFont.systemFont(ofSize: 14.0, weight: .medium), backgroundColor: UIColor(rgb: 0xFF4B32), textColor: .white, in: nil)
         }
         
     }
