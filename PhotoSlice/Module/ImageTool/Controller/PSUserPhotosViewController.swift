@@ -31,6 +31,12 @@ class PSUserPhotosViewController: BaseCollectionViewController {
         
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        collectionView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+    }
+    
     //MARK: UISet
     override func configUISet() {
         super.configUISet()

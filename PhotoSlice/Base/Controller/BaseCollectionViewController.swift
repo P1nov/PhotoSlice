@@ -102,3 +102,22 @@ extension BaseCollectionViewController : UICollectionViewDelegate, UICollectionV
         }
     }
 }
+
+extension UICollectionView {
+    
+    var currentOperateCell : UICollectionViewCell? {
+        
+        get {
+            
+            let key = UnsafeRawPointer.init(bitPattern: "currentCell".hashValue)
+            
+            return objc_getAssociatedObject(self, key!) as! UICollectionViewCell
+        }
+        set(newCell) {
+            
+            let Key = UnsafeRawPointer.init(bitPattern: "currentCell".hashValue)
+            
+            objc_setAssociatedObject(self, Key!, newCell, .OBJC_ASSOCIATION_ASSIGN)
+        }
+    }
+}

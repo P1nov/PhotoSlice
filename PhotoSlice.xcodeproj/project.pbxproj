@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		046E1D2923B59A19007A08DA /* PSOperationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2823B59A19007A08DA /* PSOperationContentView.swift */; };
+		046E1D2B23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */; };
 		048B3E6423B48A160005EF26 /* PSImageHandleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6323B48A160005EF26 /* PSImageHandleManager.swift */; };
 		048B3E6623B490A90005EF26 /* PSUserAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6523B490A90005EF26 /* PSUserAlbumViewController.swift */; };
 		048B3E6B23B494750005EF26 /* LongImageSliceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6A23B494750005EF26 /* LongImageSliceViewController.swift */; };
@@ -60,6 +62,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		046E1D2823B59A19007A08DA /* PSOperationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSOperationContentView.swift; sourceTree = "<group>"; };
+		046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSLongImageSliceCompleteCollectionViewCell.swift; sourceTree = "<group>"; };
 		048B3E6323B48A160005EF26 /* PSImageHandleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSImageHandleManager.swift; sourceTree = "<group>"; };
 		048B3E6523B490A90005EF26 /* PSUserAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSUserAlbumViewController.swift; sourceTree = "<group>"; };
 		048B3E6A23B494750005EF26 /* LongImageSliceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongImageSliceViewController.swift; sourceTree = "<group>"; };
@@ -158,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				0497151323B49BD7005F1D13 /* PSUserPhotoCollectionViewCell.swift */,
+				046E1D2823B59A19007A08DA /* PSOperationContentView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -192,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				0497151523B4A4CC005F1D13 /* PSLongImageSliceCollectionViewCell.swift */,
+				046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -658,7 +664,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				048B3E6623B490A90005EF26 /* PSUserAlbumViewController.swift in Sources */,
+				046E1D2923B59A19007A08DA /* PSOperationContentView.swift in Sources */,
 				04FC19A923B3566600F511CA /* PSRootTabBar.swift in Sources */,
+				046E1D2B23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift in Sources */,
 				04FC19B123B36E4C00F511CA /* PSOperationView.swift in Sources */,
 				04FC199A23B3386E00F511CA /* BaseCollectionViewController.swift in Sources */,
 				04FC199223B3330600F511CA /* UIViewController+Extension.swift in Sources */,

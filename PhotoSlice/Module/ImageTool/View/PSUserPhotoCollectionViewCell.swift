@@ -42,10 +42,13 @@ class PSUserPhotoCollectionViewCell: UICollectionViewCell {
             
             make.top.equalToSuperview().offset(Scale(10))
             make.right.equalToSuperview().offset(-Scale(10))
+            make.width.height.equalTo(Scale(30))
         }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    
 }

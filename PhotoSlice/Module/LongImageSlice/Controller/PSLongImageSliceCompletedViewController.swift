@@ -43,7 +43,7 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
         
         collectionView.collectionViewLayout = layout
         
-        collectionView.register(PSLongImageSliceCollectionViewCell.self, forCellWithReuseIdentifier: PSLongImageSliceCompletedCollectionViewCellIdentifier)
+        collectionView.register(PSLongImageSliceCompleteCollectionViewCell.self, forCellWithReuseIdentifier: PSLongImageSliceCompletedCollectionViewCellIdentifier)
         
         if images != nil  {
             
@@ -104,7 +104,7 @@ extension PSLongImageSliceCompletedViewController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PSLongImageSliceCompletedCollectionViewCellIdentifier, for: indexPath) as! PSLongImageSliceCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PSLongImageSliceCompletedCollectionViewCellIdentifier, for: indexPath) as! PSLongImageSliceCompleteCollectionViewCell
         
         cell.imageView.image = finalImage
         

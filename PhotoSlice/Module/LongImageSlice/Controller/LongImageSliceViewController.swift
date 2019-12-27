@@ -11,6 +11,16 @@ import UIKit
 private let PSLongImageSliceCollectionViewCellIdentifier = "PSLongImageSliceCollectionViewCellIdentifier"
 
 class LongImageSliceViewController: BaseCollectionViewController {
+    
+    var isOperated : Bool = false
+    
+    var currentIndexPath : IndexPath?
+    var currentCell : PSLongImageSliceCollectionViewCell?
+    
+     var changeView : UIView?
+    
+    var firstImage : UIImage?
+    var lastImage : UIImage?
 
     //MARK: lazyLoad
     var selectedImages : [UIImage]?
@@ -39,7 +49,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
         super.configUISet()
         
         let layout = UICollectionViewFlowLayout()
-        layout.estimatedItemSize = .init(width: Scale(345), height: 10.0)
+        layout.estimatedItemSize = .init(width: collectionView.bounds.width, height: 10.0)
         
         collectionView.collectionViewLayout = layout
         
@@ -58,6 +68,10 @@ class LongImageSliceViewController: BaseCollectionViewController {
             make.right.bottom.equalToSuperview().offset(-Scale(15))
             make.width.height.equalTo(Scale(30))
         }
+        
+        let longPress = UILongPressGestureRecognizer.init(target: self, action: #selector(handle(longPress:)))
+        
+        collectionView.addGestureRecognizer(longPress)
         
     }
     
@@ -84,7 +98,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
         
         selectedImages = selectedImages?.map({ (image) -> UIImage in
             
-            let finalImage = PSImageHandleManager.shared.getAspectFillWidthImage(image1: image, width: Scale(345))
+            let finalImage = PSImageHandleManager.shared.getAspectFillWidthImage(image1: image, width: Scale(290))
             
             return finalImage
         })
@@ -111,6 +125,68 @@ class LongImageSliceViewController: BaseCollectionViewController {
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
+    @objc private func handle(longPress : UILongPressGestureRecognizer) {
+        
+        switch longPress.state {
+        case .began:
+            
+            currentIndexPath = collectionView.indexPathForItem(at: longPress.location(in: collectionView))
+            
+            guard let indexPath = collectionView.indexPathForItem(at: longPress.location(in: collectionView)) else {
+                
+                return 
+            }
+            
+            collectionView.beginInteractiveMovementForItem(at: indexPath)
+            currentCell = (collectionView.cellForItem(at: indexPath) as! PSLongImageSliceCollectionViewCell)
+            changeView = currentCell?.snapshotView(afterScreenUpdates: true)
+            changeView?.alpha = 0.0
+            changeView?.transform = CGAffineTransform.init(scaleX: 0.1, y: 0.1)
+            
+            self.collectionView.addSubview(changeView!)
+            
+            UIView.animate(withDuration: 0.2) {
+                
+                self.changeView?.alpha = 0.6
+                self.changeView?.transform = CGAffineTransform.init(scaleX: 0.8, y: 0.8)
+            }
+            
+            currentCell?.layer.removeAnimation(forKey: "shake")
+        case .changed:
+            
+            changeView!.center = longPress.location(in: self.collectionView)
+            collectionView.updateInteractiveMovementTargetPosition(longPress.location(in: collectionView))
+            
+            break
+        case .ended:
+            
+            collectionView.endInteractiveMovement()
+            
+            let endIndexPath = collectionView.indexPathForItem(at: longPress.location(in: self.collectionView))
+            
+            (selectedImages![currentIndexPath!.item], selectedImages![endIndexPath!.item]) = (selectedImages![endIndexPath!.item], selectedImages![currentIndexPath!.item])
+            
+            UIView.animate(withDuration: 0.25, animations: {
+                
+                self.changeView?.alpha = 0.0
+                self.changeView?.transform = CGAffineTransform.init(scaleX: 0.1, y: 0.1)
+            }) { (completed) in
+                
+                self.changeView?.removeFromSuperview()
+                
+                self.currentCell?.imageView.image = self.selectedImages![self.currentIndexPath!.item]
+                
+                let endCell = self.collectionView.cellForItem(at: endIndexPath!) as! PSLongImageSliceCollectionViewCell
+                endCell.imageView.image = self.selectedImages![endIndexPath!.item]
+                
+            }
+            
+            break
+        default:
+            break
+        }
+    }
+    
     //MARK: dealloc
     deinit {
         removeNotificationObserver()
@@ -135,7 +211,9 @@ extension LongImageSliceViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PSLongImageSliceCollectionViewCellIdentifier, for: indexPath) as! PSLongImageSliceCollectionViewCell
         
         cell.imageView.image = selectedImages![indexPath.row]
-        
+        cell.deleteButton.addTarget(self, action: #selector(deleteItem(button:)), for: .touchUpInside)
+        cell.deleteButton.tag = indexPath.row
+
         return cell
     }
 
@@ -143,4 +221,12 @@ extension LongImageSliceViewController {
         
         Scale(2)
     }
+    
+    @objc private func deleteItem(button : UIButton) {
+        
+        selectedImages?.remove(at: button.tag)
+        
+        collectionView.reloadData()
+    }
+    
 }
