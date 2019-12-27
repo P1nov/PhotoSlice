@@ -18,6 +18,40 @@ class PSLongImageSliceCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        return scrollView
+    }()
+    
+    var image : UIImage? {
+        
+        get {
+            
+            return _image
+        }
+        set(newImage) {
+            
+            guard let image = newImage else {
+                
+                return
+            }
+            
+            _image = image
+            self.scrollView.contentSize = image.size
+            
+            self.scrollView.snp.remakeConstraints { (make) in
+                
+                make.centerY.equalToSuperview()
+                make.left.equalTo(deleteButton.snp_right).offset(Scale(20))
+                make.width.equalTo(Scale(290))
+                make.height.equalTo(image.size.height)
+                make.bottom.equalToSuperview().offset(-Scale(5))
+            }
+        }
+    }
+    
+    var _image : UIImage?
+    
     lazy var deleteButton: UIButton = {
         
         let button = UIButton()
@@ -34,7 +68,8 @@ class PSLongImageSliceCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         
         contentView.addSubview(deleteButton)
-        contentView.addSubview(imageView)
+        contentView.addSubview(scrollView)
+        scrollView.addSubview(imageView)
         
         deleteButton.snp.makeConstraints { (make) in
             
@@ -43,12 +78,19 @@ class PSLongImageSliceCollectionViewCell: UICollectionViewCell {
             make.width.height.equalTo(Scale(30))
         }
         
-        imageView.snp.makeConstraints { (make) in
+        scrollView.snp.makeConstraints { (make) in
             
             make.centerY.equalToSuperview()
             make.left.equalTo(deleteButton.snp_right).offset(Scale(20))
             make.width.equalTo(Scale(290))
             make.bottom.equalToSuperview().offset(-Scale(5))
+        }
+        
+        imageView.snp.makeConstraints { (make) in
+            
+            make.center.equalToSuperview()
+            make.width.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
     

@@ -16,6 +16,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
     
     var currentIndexPath : IndexPath?
     var currentCell : PSLongImageSliceCollectionViewCell?
+    var changedCell : PSLongImageSliceCollectionViewCell?
     
      var changeView : UIView?
     
@@ -157,6 +158,21 @@ class LongImageSliceViewController: BaseCollectionViewController {
             changeView!.center = longPress.location(in: self.collectionView)
             collectionView.updateInteractiveMovementTargetPosition(longPress.location(in: collectionView))
             
+            let changedIndexPath = collectionView.indexPathForItem(at: longPress.location(in: self.collectionView))
+            
+            if changedCell != nil {
+                
+                changedCell?.contentView.layer.borderWidth = 0
+                changedCell?.contentView.layer.borderColor = UIColor.clear.cgColor
+            }
+            
+            changedCell = (collectionView.cellForItem(at: changedIndexPath!) as! PSLongImageSliceCollectionViewCell)
+            
+            
+            
+            changedCell?.contentView.layer.borderWidth = Scale(2)
+            changedCell?.contentView.layer.borderColor = UIColor(rgb: 0xFF4B32).cgColor
+            
             break
         case .ended:
             
@@ -213,6 +229,7 @@ extension LongImageSliceViewController {
         cell.imageView.image = selectedImages![indexPath.row]
         cell.deleteButton.addTarget(self, action: #selector(deleteItem(button:)), for: .touchUpInside)
         cell.deleteButton.tag = indexPath.row
+        cell.image = selectedImages![indexPath.row]
 
         return cell
     }
