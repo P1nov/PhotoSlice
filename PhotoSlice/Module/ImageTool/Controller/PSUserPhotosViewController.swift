@@ -15,7 +15,9 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     
     var album : PHAssetCollection?
     
-    private var photos : PHFetchResult<PHAsset>? {
+    private var resource : (PHFetchResult<PHAsset>, PHFetchResult<PHAssetCollection>, PHFetchResult<PHCollection>)?
+    
+    private var images : [UIImage]? {
         
         didSet {
             
@@ -24,7 +26,7 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     }
     
     private var selectImages : [Int : UIImage]? = [:]
-    private var selectAsset : [PHAsset]? = []
+    var selectAssets : [Int : PHAsset]? = [:]
     
     private var imageRequeseOptions = PHImageRequestOptions()
     
@@ -33,13 +35,30 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     var selectNum : Int = 0
 
     //MARK: lazyLoad
-    
+    lazy var toolBar: PSImageToolBar = {
+        let toolBar = PSImageToolBar.init(frame: CGRect(x: 0, y: self.view.frame.height - (Scale(50) + kSafeBottomHeight()), width: self.view.frame.width, height: Scale(50) + kSafeBottomHeight()))
+        
+        toolBar.confirmButton.addTarget(self, action: #selector(completeImageSelect), for: .touchUpInside)
+        toolBar.previewButton.isHidden = true
+        
+        return toolBar
+    }()
     
     //MARK: lifeCycle
     
+//    convenience init(maxSelectNum : Int) {
+//
+//        self.init()
+//
+//        self.maxSelect = maxSelectNum
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         // Do any additional setup after loading the view.
         
     }
@@ -47,30 +66,37 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        collectionView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        collectionView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height - toolBar.frame.height - kSafeBottomHeight())
+        toolBar.frame = CGRect(x: 0, y: collectionView.frame.height, width: self.view.frame.width, height: Scale(50) + kSafeBottomHeight())
     }
     
     //MARK: UISet
     override func configUISet() {
         super.configUISet()
         
+        self.view.addSubview(toolBar)
+        
         imageRequeseOptions.isSynchronous = true
         imageRequeseOptions.resizeMode = .fast
         imageRequeseOptions.isNetworkAccessAllowed = false;
         imageRequeseOptions.isSynchronous = true
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "完成", style: .plain, target: self, action: #selector(completeImageSelect))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "前往相册", style: .plain, target: self, action: #selector(gotoAlbum))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "取消", style: .plain, target: self, action: #selector(closeCurrent))
         
         collectionView.register(PSUserPhotoCollectionViewCell.self, forCellWithReuseIdentifier: PSUserPhotoCollectionViewCellIdentifier)
         
         PNProgressHUD.loading(at: nil)
         
-        PSImageHandleManager.shared.getPhotosFromAlbum(album: album!, completion: { (photos) in
-
+        PSImageHandleManager.shared.getRealImageFromAssets { (images, resource) in
+            
             PNProgressHUD.hideLoading(from: nil)
-
-            self.photos = photos
-        })
+            
+            self.images = images
+            self.resource = resource
+        }
+        
+        updateToolBarState()
         
     }
     
@@ -83,14 +109,7 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     
     //MARK: action
     
-    @objc private func completeImageSelect() {
-        
-        let images = selectImages?.map { it in it.value }
-        
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: PSImageSelectImageNotificationName), object: nil, userInfo: ["images" : images as Any])
-        
-        self.navigationController?.setViewControllers([self.navigationController!.viewControllers.first!], animated: true)
-    }
+    
     
     //MARK: dealloc
     deinit {
@@ -108,7 +127,7 @@ extension PSUserPhotosViewController {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        photos?.count ?? 0
+        images?.count ?? 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -116,8 +135,7 @@ extension PSUserPhotosViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PSUserPhotoCollectionViewCellIdentifier, for: indexPath) as! PSUserPhotoCollectionViewCell
         
         cell.imageView.image = UIImage.image(with: .orange)
-        cell.selectBtn.tag = indexPath.row
-        cell.resource = photos![indexPath.row]
+        cell.resource = resource?.0[indexPath.row]
         
         if selectImages![indexPath.row] != nil {
             
@@ -127,18 +145,16 @@ extension PSUserPhotosViewController {
             cell.selectBtn.isSelected = false
         }
         
+        if selectAssets![indexPath.row] != nil {
+            
+            cell.selectBtn.isSelected = true
+        }else {
+            
+            cell.selectBtn.isSelected = false
+        }
         
         //加载cell上的图片（缩略图）
-        DispatchQueue.global().async {
-            
-            PHImageManager.default().requestImage(for: self.photos![indexPath.row], targetSize: CGSize(width: (kScreenWidth - Scale(5)) / 5.0, height: (kScreenWidth - Scale(5)) / 5.0), contentMode: .aspectFill, options: self.imageRequeseOptions) { (image, info) in
-                
-                DispatchQueue.main.async {
-
-                    cell.imageView.image = image
-                }
-            }
-        }
+        cell.imageView.image = images![indexPath.row]
         
         //cell上的button点击交互
         cell.didSelectCellImage = { (selected) in
@@ -154,29 +170,21 @@ extension PSUserPhotosViewController {
             //小于最大选择数且选择
             if self.selectNum < self.maxSelect && !selected {
                 
-                PHImageManager.default().requestImage(for: cell.resource!, targetSize: .zero, contentMode: .aspectFill, options: self.imageRequeseOptions) { (image, info) in
-                    
-                    if let finalImage = image {
-                        
-                        self.selectNum += 1
-                        
-                        self.selectImages![indexPath.row] = finalImage
-                    }else {
-                        
-                        return
-                    }
-                }
+                self.selectNum += 1
+                
+                self.selectAssets![indexPath.row] = cell.resource
             }
             
             //取消选择图片
             if selected {
-                
-                self.selectImages?.removeValue(forKey: indexPath.row)
+                self.selectAssets?.removeValue(forKey: indexPath.row)
                 
                 self.selectNum -= 1
             }
             
             cell.selectBtn.isSelected = !selected
+            
+            self.updateToolBarState()
         }
 
         return cell
@@ -200,5 +208,101 @@ extension PSUserPhotosViewController {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         
         .init(top: Scale(1), left: Scale(1), bottom: Scale(1), right: Scale(1))
+    }
+}
+
+@objc
+private extension PSUserPhotosViewController {
+    
+    func closeCurrent() {
+        
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func completeImageSelect() {
+        
+        PNProgressHUD.loading(at: nil)
+        
+        DispatchQueue.global().sync {
+            
+            let assets = selectAssets?.map { it in it.value }
+            
+            if let currentAssets = assets {
+                
+                PSImageHandleManager.shared.getImageFromAssets(options : self.imageRequeseOptions,
+                                                               assets: currentAssets ) { (images) in
+                    
+                    DispatchQueue.main.async {
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: PSImageSelectImageNotificationName),
+                                                        object: nil,
+                                                        userInfo: ["images" : images as Any, "assets" : self.selectAssets as Any])
+                        
+                        PNProgressHUD.hideLoading(from: nil)
+                        
+                        self.navigationController?.setViewControllers([self.navigationController!.viewControllers.first!], animated: true)
+                    }
+                    
+                }
+            }else {
+                
+                PNProgressHUD.hideLoading(from: nil)
+                
+                PNProgressHUD.present(with: "出现异常！请稍后重试~",
+                                      presentType: .fromTop,
+                                      font: .systemFont(ofSize: 14.0, weight: .medium),
+                                      backgroundColor: UIColor(rgb: 0xFF4B32),
+                                      textColor: .white, in: nil)
+                
+                return
+            }
+            
+        }
+    }
+    
+    func gotoAlbum() {
+        
+        PNProgressHUD.loading(at: nil)
+        
+        PSImageHandleManager.shared.getUserAlbums { (albums) in
+            
+            PNProgressHUD.hideLoading(from: nil)
+            
+            let controller = PSUserAlbumViewController()
+            controller.userAlbums = albums
+            
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
+    func updateToolBarState() {
+        
+        if selectNum == 0 {
+            
+            toolBar.confirmButton.isEnabled = false
+        }else {
+            
+            toolBar.confirmButton.isEnabled = true
+        }
+        
+        var confirmTitle = "确认" + "(\(selectNum)/\(maxSelect))"
+        toolBar.confirmButton.setTitle(confirmTitle, for: .normal)
+        
+        guard let assets = selectAssets else {
+            
+            return
+        }
+        
+        selectNum = assets.keys.count
+        confirmTitle = "确认" + "(\(selectNum)/\(maxSelect))"
+        toolBar.confirmButton.setTitle(confirmTitle, for: .normal)
+        
+        if selectNum == 0 {
+            
+            toolBar.confirmButton.isEnabled = false
+        }else {
+            
+            toolBar.confirmButton.isEnabled = true
+        }
     }
 }

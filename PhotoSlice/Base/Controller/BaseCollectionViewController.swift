@@ -111,7 +111,7 @@ extension UICollectionView {
             
             let key = UnsafeRawPointer.init(bitPattern: "currentCell".hashValue)
             
-            return objc_getAssociatedObject(self, key!) as! UICollectionViewCell
+            return (objc_getAssociatedObject(self, key!) as! UICollectionViewCell)
         }
         set(newCell) {
             

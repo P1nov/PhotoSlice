@@ -36,160 +36,9 @@ class PNProgressHUDView : UIView {
     }
 }
 
-class PNProgressLoadingViewCustom: UIView {
-    
-    private lazy var mainView: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        view.layer.cornerRadius = 20
-        view.backgroundColor = .clear
-        view.layer.borderColor = RGB(R: 180, G: 180, B: 180)?.cgColor
-        view.layer.borderWidth = 5
-        return view
-    }()
-    
-    private var count: Int = 1
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.addSubview(self.mainView)
-        
-        let bezie:UIBezierPath = UIBezierPath(arcCenter: CGPoint(x: 20, y: 20), radius: 17.5, startAngle: .pi, endAngle: -.pi/2, clockwise: true)
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.lineWidth = 5
-        shapeLayer.strokeColor = UIColor.black.cgColor
-//        shapeLayer.strokeColor = UIColor.clear.cgColor
-        shapeLayer.fillColor = UIColor.clear.cgColor
-        shapeLayer.path = bezie.cgPath
-        shapeLayer.lineCap = CAShapeLayerLineCap(rawValue: "round")
-        setGradualChangingColor(targetLayer: shapeLayer, color: RGB(R: 255, G: 0, B: 42)!, toColor: UIColor.white)
-        self.layer.addSublayer(shapeLayer)
-        
-        self.start()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    @objc public func start() {
-        let rotation = CABasicAnimation.init(keyPath: "transform.rotation.z")
-        rotation.fromValue = 0
-        rotation.toValue = Double.pi * 2
-        rotation.repeatCount = MAXFLOAT
-        rotation.duration = 1
-        rotation.isRemovedOnCompletion = false
-        self.layer.add(rotation, forKey: nil)
-    }
-    
-    func setGradualChangingColor(targetLayer:CAShapeLayer, color:UIColor, toColor:UIColor){
-        let gradLayer:CAGradientLayer = CAGradientLayer()
-        gradLayer.frame = targetLayer.bounds
-        gradLayer.colors = [color.cgColor,toColor.cgColor]
-        gradLayer.startPoint = CGPoint(x: 0, y: 0)
-        gradLayer.endPoint = CGPoint(x: 1, y: 1)
-        gradLayer.locations = [0,1]
-        self.layer.addSublayer(gradLayer)
-    }
-    
-}
-
-class PNProgressLoadingView : UIView {
-    
-    /// 背景view
-    private lazy var bacView: UIView = {
-        let view = UIView(frame: CGRect(x: kScreenWidth/3, y: (kScreenHeight - 60)/2, width: kScreenWidth/3, height: 60))
-        view.backgroundColor = .clear
-        view.layer.cornerRadius = 5
-        view.layer.shadowOffset = CGSize(width: 0, height: 2)
-        view.layer.shadowOpacity = 0.2
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowPath = UIBezierPath(rect: view.bounds).cgPath
-        return view
-    }()
-    
-    /// 透明效果
-    private lazy var visual: UIVisualEffectView = {
-        let blur = UIBlurEffect(style: .light)
-        let vis = UIVisualEffectView(effect: blur)
-        vis.frame = CGRect(x: 0, y: 0, width: kScreenWidth/3, height: 60)
-        vis.backgroundColor = .white
-        vis.alpha = 0.8
-        vis.layer.cornerRadius = 5
-        vis.layer.masksToBounds = true
-        return vis
-    }()
-    
-    /// 自定义菊花
-    private lazy var custom: LSDIndicatorCustom = {
-        let view = LSDIndicatorCustom(frame: CGRect(x: (kScreenWidth/3 - 40)/2, y: 10, width: 90, height: 40))
-        view.center = self.center
-        return view
-    }()
-    
-    public convenience init() {
-        self.init(frame: CGRect(x: 0, y: 0, width: kScreenWidth, height: kScreenHeight))
-        self.backgroundColor = .clear
-        self.addSubview(self.bacView)
-        self.bacView.addSubview(self.visual)
-        self.bacView.addSubview(self.custom)
-    }
-    
-    /// 把我show出来
-    public func showMe(_ view: UIView) {
-        self.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1)
-        view.addSubview(self)
-        self.presentAnimation()
-    }
-    
-    /// window上弹出来
-    public func showMeInWindow() {
-        self.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1)
-        UIApplication.shared.keyWindow?.addSubview(self)
-        self.presentAnimation()
-    }
-    
-    /// 变消失
-    public func dismiss() {
-        self.dissAnimation()
-    }
-    
-    /// 弹出视图
-    private func presentAnimation() {
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
-            self.layer.transform = CATransform3DMakeScale(1, 1, 1)
-        })
-    }
-    
-    /// 消失了
-    private func dissAnimation() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveLinear, animations: {
-            self.layer.transform = CATransform3DMakeScale(0.1, 0.1, 1)
-        }) { _ in
-            self.removeFromSuperview()
-        }
-    }
-
-    private override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    deinit {
-        print("LSDMidIndicatorView deinit")
-    }
-    
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.dismiss()
-    }
-}
-
 class PNProgressHUD: NSObject {
     
-    var loadingView : PNProgressLoadingView?
+    var loadingView : LSDMidIndicatorView?
     
     enum PresentType {
         case popup
@@ -325,7 +174,7 @@ class PNProgressHUD: NSObject {
         
         var newSuperView : UIView?
         
-        var loadingView : PNProgressLoadingView?
+        var loadingView : LSDMidIndicatorView?
         
         if superView == nil {
             
@@ -346,7 +195,7 @@ class PNProgressHUD: NSObject {
                 return
             }
             
-            loadingView = PNProgressLoadingView()
+            loadingView = LSDMidIndicatorView()
             loadingView!.transform = CGAffineTransform.init(scaleX: 0.1, y: 0.1)
             
             currentWindow.addSubview(loadingView!)
@@ -355,7 +204,7 @@ class PNProgressHUD: NSObject {
             
         }else {
             
-            loadingView = PNProgressLoadingView()
+            loadingView = LSDMidIndicatorView()
             loadingView!.transform = CGAffineTransform.init(scaleX: 0.1, y: 0.1)
             
             superView?.addSubview(loadingView!)
@@ -397,9 +246,9 @@ class PNProgressHUD: NSObject {
                     break
                 }
                 
-                if subView.isKind(of: PNProgressLoadingView.self) {
+                if subView.isKind(of: LSDMidIndicatorView.self) {
                     
-                    (subView as! PNProgressLoadingView).dismiss()
+                    (subView as! LSDMidIndicatorView).dismiss()
                     
                     isHided = true
                 }
@@ -416,9 +265,9 @@ class PNProgressHUD: NSObject {
                     break
                 }
                 
-                if subView.isKind(of: PNProgressLoadingView.self) {
+                if subView.isKind(of: LSDMidIndicatorView.self) {
                     
-                    (subView as! PNProgressLoadingView).dismiss()
+                    (subView as! LSDMidIndicatorView).dismiss()
                     
                     isHided = true
                 }

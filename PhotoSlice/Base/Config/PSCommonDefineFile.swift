@@ -26,3 +26,16 @@ func Scale(_ scale:CGFloat) -> CGFloat {
 
 //MARK: -notificationName
 let PSImageSelectImageNotificationName = "PSImageSelectImageNotificationName"
+
+func kSafeBottomHeight() -> CGFloat {
+    if #available(iOS 11.0, *) {
+        
+        if (UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0) > 0 {
+            return 34
+        } else {
+            return 0
+        }
+    } else {
+        return 0
+    }
+}

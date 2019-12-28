@@ -26,6 +26,22 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
         
     }
     
+    convenience init(finalImages : [UIImage]) {
+        self.init()
+        
+        images = finalImages
+        
+        if images != nil  {
+            
+            PSImageHandleManager.shared.sliceImage(with: images!) { (image) in
+                 
+                self.finalImage = image
+                
+                self.collectionView.reloadData()
+            }
+        }
+    }
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
@@ -50,16 +66,6 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
         collectionView.collectionViewLayout = layout
         
         collectionView.register(PSLongImageSliceCompleteCollectionViewCell.self, forCellWithReuseIdentifier: PSLongImageSliceCompletedCollectionViewCellIdentifier)
-        
-        if images != nil  {
-            
-            PSImageHandleManager.shared.sliceImage(with: images!) { (image) in
-                 
-                self.finalImage = image
-                
-                self.collectionView.reloadData()
-            }
-        }
         
         collectionView.backgroundColor = .black
         self.navigationController?.navigationBar.set(backgroundColor: .black, tintColor: .white, isShowShadow: false)

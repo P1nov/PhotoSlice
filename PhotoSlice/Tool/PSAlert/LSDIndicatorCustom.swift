@@ -59,8 +59,6 @@ class LSDIndicatorCustom: UIView {
         setGradualChangingColor(targetLayer: shapeLayer, color: RGB(R: 255, G: 0, B: 42)!, toColor: UIColor.white)
         self.layer.addSublayer(shapeLayer)
         
-
-        
         self.start()
     }
     

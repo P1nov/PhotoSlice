@@ -13,6 +13,8 @@ private let PSLongImageSliceCollectionViewCellIdentifier = "PSLongImageSliceColl
 
 class LongImageSliceViewController: BaseCollectionViewController {
     
+    private var selectAssets : [Int : PHAsset] = [:]
+    
     var isOperated : Bool = false
     
     var currentIndexPath : IndexPath?
@@ -65,7 +67,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
         
         self.setNavTitle(string: "长图拼接", font: UIFont.systemFont(ofSize: 16.0, weight: .medium))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "取消", style: .plain, target: self, action: #selector(closeSlice))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "前往相册", style: .plain, target: self, action: #selector(toUserAlbum))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "选择照片", style: .plain, target: self, action: #selector(toUserAlbum))
         
         collectionView.register(PSLongImageSliceCollectionViewCell.self, forCellWithReuseIdentifier: PSLongImageSliceCollectionViewCellIdentifier)
         
@@ -103,8 +105,10 @@ class LongImageSliceViewController: BaseCollectionViewController {
     @objc private func completedImageSelect(notification : Notification) {
         
         let images = notification.userInfo!["images"] as! [UIImage]
+        let assets = notification.userInfo!["assets"] as! [Int : PHAsset]
         
         selectedImages = images
+        selectAssets = assets
         
         selectedImages = selectedImages?.map({ (image) -> UIImage in
             
@@ -124,20 +128,28 @@ class LongImageSliceViewController: BaseCollectionViewController {
     
     @objc private func toUserAlbum() {
         
-        self.navigationController?.pushViewController(PSUserAlbumViewController(), animated: true)
+        let controller = PSUserPhotosViewController()
+        controller.maxSelect = 7
+        controller.selectAssets = self.selectAssets
+        
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     @objc private func completeSliceImage() {
         
         if selectedImages!.count > 0 {
             
-            let controller = PSLongImageSliceCompletedViewController()
-            controller.images = selectedImages
+            let controller = PSLongImageSliceCompletedViewController(finalImages: selectedImages!)
             
             self.navigationController?.pushViewController(controller, animated: true)
         }else {
             
-            PNProgressHUD.present(with: "您还未选择图片", presentType: .fromTop, font: UIFont.systemFont(ofSize: 14.0, weight: .medium), backgroundColor: UIColor(rgb: 0xFF4B32), textColor: .white, in: nil)
+            PNProgressHUD.present(with: "您还未选择图片",
+                                  presentType: .fromTop,
+                                  font: UIFont.systemFont(ofSize: 14.0, weight: .medium),
+                                  backgroundColor: UIColor(rgb: 0xFF4B32),
+                                  textColor: .white,
+                                  in: nil)
         }
         
     }

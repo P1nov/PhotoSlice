@@ -11,7 +11,7 @@ import Photos
 
 class PSUserAlbumViewController: BaseTableViewController {
     
-    private var userAlbums : PHFetchResult<PHAssetCollection>?
+    var userAlbums : PHFetchResult<PHAssetCollection>?
 
     //MARK: lazyLoad
     
@@ -29,11 +29,11 @@ class PSUserAlbumViewController: BaseTableViewController {
     override func configUISet() {
         super.configUISet()
         
-        if PSImageHandleManager.isAuthorized() {
-            
-            userAlbums = PSImageHandleManager.shared.getAllUserAlbum().1
-            tableView.reloadData()
-        }
+//        if PSImageHandleManager.isAuthorized() {
+//            
+//            userAlbums = PSImageHandleManager.shared.getAllUserAlbum().1
+//            tableView.reloadData()
+//        }
         
         self.setNavTitle(string: "相册选择", font: nil)
         
@@ -72,7 +72,7 @@ extension PSUserAlbumViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: BaseTableViewCellIdentifier, for: indexPath)
         
-        cell.textLabel?.text = userAlbums?.object(at: indexPath.row).localizedTitle ?? ""
+        cell.textLabel?.text = userAlbums?.object(at: indexPath.row).localizedLocationNames.first ?? ""
         
         return cell
     }
