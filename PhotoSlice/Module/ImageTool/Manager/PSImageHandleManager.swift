@@ -42,7 +42,7 @@ class PSImageHandleManager: NSObject {
         return (allPhotos, smartAlbums, userCollections)
     }
     
-    func getPhotosFromAlbum(album : PHAssetCollection) -> PHFetchResult<PHAsset> {
+    func directGetPhotos(album : PHAssetCollection) -> PHFetchResult<PHAsset> {
         
         let photosOption = PHFetchOptions()
         photosOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
@@ -50,6 +50,16 @@ class PSImageHandleManager: NSObject {
         let photos = PHAsset.fetchAssets(in: album, options: photosOption)
         
         return photos
+    }
+    
+    func getPhotosFromAlbum(album : PHAssetCollection, completion : (_ photos : PHFetchResult<PHAsset>) -> Void) {
+        
+        let photosOption = PHFetchOptions()
+        photosOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        
+        let photos = PHAsset.fetchAssets(in: album, options: photosOption)
+        
+        completion(photos)
     }
     
     func getAspectFillWidthImage(image1 : UIImage, width : CGFloat) -> UIImage {
@@ -65,32 +75,47 @@ class PSImageHandleManager: NSObject {
         return finalImage!
     }
     
-    func getRealImageFromAssets(album : PHAssetCollection, completion : @escaping (_ images : [UIImage]) -> Void) {
+    func getRealImageFromAssets(album : PHAssetCollection, completion : @escaping (_ images : [Data]) -> Void) {
         
-        let assets = self.getPhotosFromAlbum(album: album)
+        let assets = self.directGetPhotos(album: album)
         
-        var images : [UIImage] = []
+        var images : [Data] = []
+        
+        let options = PHImageRequestOptions()
+        options.isSynchronous = true
+        options.resizeMode = .fast;
+        options.isNetworkAccessAllowed = false;
         
         for index in 0 ..< assets.count {
             
-            PHImageManager.default().requestImageData(for: assets.object(at: index), options: nil) { (imageData, string, orientation, userInfo) in
+//            PHImageManager.default().requestImage(for: assets[index], targetSize: .zero, contentMode: .aspectFill, options: options) { (image, userInfo) in
+//
+//                if let finalImage = image {
+//
+//                    images.append(finalImage)
+//
+//                    if index == assets.count - 1 {
+//
+//                        completion(images)
+//                    }
+//                }
+//
+//            }
+            
+            PHImageManager.default().requestImageData(for: assets[index], options: options) { (imageData, string, orientation, userInfo) in
                 
-                if imageData != nil {
+                if let finalImageData = imageData {
                     
-                    autoreleasepool {
+                    images.append(finalImageData)
+                    
+                    if index == assets.count - 1 {
                         
-                        let image = UIImage.init(data: imageData!)
-                        
-                        images.append(image!)
+                        completion(images)
                     }
-                    
-                }
-                
-                if index == assets.count - 1 {
-                    
-                    completion(images)
                 }
             }
+            
+            
         }
         
     }

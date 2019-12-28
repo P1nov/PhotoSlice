@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import Photos
+
+typealias SelectImageCallBack = (_ selected : Bool) -> Void
 
 class PSUserPhotoCollectionViewCell: UICollectionViewCell {
     
@@ -17,11 +20,21 @@ class PSUserPhotoCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
+    var resource : PHAsset?
+    var imageRequestID : Int32 = 0
+    
+    var didSelectCellImage : SelectImageCallBack?
+    
     lazy var selectBtn: UIButton = {
         
         let button = UIButton()
-        button.setImage(UIImage(named: "image_unselect"), for: .normal)
-        button.setImage(UIImage(named: "image_select"), for: .selected)
+        button.setImage(UIImage(named: "photo_original_def"), for: .normal)
+        button.setImage(UIImage(named: "photo_sel_previewVc"), for: .selected)
+        
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel!.font = UIFont.systemFont(ofSize: 12.0, weight: .medium)
+        
+        button.addTarget(self, action: #selector(imageDidSelect(button:)), for: .touchUpInside)
         
         return button
     }()
@@ -42,13 +55,20 @@ class PSUserPhotoCollectionViewCell: UICollectionViewCell {
             
             make.top.equalToSuperview().offset(Scale(10))
             make.right.equalToSuperview().offset(-Scale(10))
-            make.width.height.equalTo(Scale(30))
+            make.width.height.equalTo(Scale(20))
         }
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+@objc
+extension PSUserPhotoCollectionViewCell {
     
-    
+    func imageDidSelect(button : UIButton) {
+        
+        didSelectCellImage!(button.isSelected)
+    }
 }

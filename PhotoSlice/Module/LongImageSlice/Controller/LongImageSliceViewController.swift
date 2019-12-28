@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 private let PSLongImageSliceCollectionViewCellIdentifier = "PSLongImageSliceCollectionViewCellIdentifier"
 
