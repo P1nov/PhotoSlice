@@ -173,7 +173,10 @@ class LongImageSliceViewController: BaseCollectionViewController {
             changeView!.center = longPress.location(in: self.collectionView)
             collectionView.updateInteractiveMovementTargetPosition(longPress.location(in: collectionView))
             
-            let changedIndexPath = collectionView.indexPathForItem(at: longPress.location(in: self.collectionView))
+            guard let changedIndexPath = collectionView.indexPathForItem(at: longPress.location(in: self.collectionView)) else {
+                
+                return
+            }
             
             if changedCell != nil {
                 
@@ -181,14 +184,36 @@ class LongImageSliceViewController: BaseCollectionViewController {
                 changedCell?.contentView.layer.borderColor = UIColor.clear.cgColor
             }
             
-            changedCell = (collectionView.cellForItem(at: changedIndexPath!) as! PSLongImageSliceCollectionViewCell)
+            guard let currentCell = collectionView.cellForItem(at: changedIndexPath) else {
+                
+                return
+            }
+            
+            changedCell = (currentCell as! PSLongImageSliceCollectionViewCell)
             
             changedCell?.contentView.layer.borderWidth = Scale(2)
             changedCell?.contentView.layer.borderColor = UIColor(rgb: 0xFF4B32).cgColor
             
-            if collectionView.contentOffset.y < collectionView.contentSize.height && longPress.location(in: self.collectionView).y >= collectionView.frame.height - 30 {
+            if collectionView.contentOffset.y < collectionView.contentSize.height && longPress.location(in: self.view).y >= self.view.frame.height - 30 {
                 
-                collectionView.setContentOffset(CGPoint(x: 0, y: collectionView.contentOffset.y + 30), animated: true)
+                if collectionView.contentOffset.y + 30 >= collectionView.contentSize.height {
+                    
+                    collectionView.setContentOffset(CGPoint(x: 0, y: collectionView.contentSize.height), animated: true)
+                }else {
+                    
+                    collectionView.setContentOffset(CGPoint(x: 0, y: collectionView.contentOffset.y + 30), animated: true)
+                }
+                
+                
+            }else if collectionView.contentOffset.y > 0 && longPress.location(in: self.view).y <= 30 {
+                
+                if collectionView.contentOffset.y <= 30 {
+                    
+                    collectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                }else {
+                    
+                    collectionView.setContentOffset(CGPoint(x: 0, y: collectionView.contentOffset.y - 30), animated: true)
+                }
             }
             
             break

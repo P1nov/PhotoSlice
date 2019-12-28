@@ -94,9 +94,27 @@ class PNProgressHUD: NSObject {
         
         if superView == nil {
             
-            (UIApplication.shared.delegate as! AppDelegate).window?.addSubview(view)
+            var keyWindow : UIWindow?
             
-            newSuperView = (UIApplication.shared.delegate as! AppDelegate).window
+            for window in UIApplication.shared.windows {
+                if (window.isKeyWindow) {
+                    // you have the key window
+                    
+                    keyWindow = window
+                    
+                    break;
+                }
+            }
+            
+            guard let currentWindow = keyWindow else {
+                
+                return
+            }
+            
+            currentWindow.addSubview(view)
+            
+            newSuperView = currentWindow
+            
         }else {
             
             superView?.addSubview(view)

@@ -54,7 +54,7 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
         if images != nil  {
             
             PSImageHandleManager.shared.sliceImage(with: images!) { (image) in
-                
+                 
                 self.finalImage = image
                 
                 self.collectionView.reloadData()
