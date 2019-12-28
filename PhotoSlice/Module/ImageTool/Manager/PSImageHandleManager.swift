@@ -130,7 +130,7 @@ class PSImageHandleManager: NSObject {
         let options = PHImageRequestOptions()
         
         options.isSynchronous = true
-        options.resizeMode = .fast
+        options.resizeMode = .exact
         options.isNetworkAccessAllowed = false
         
         let assets = resource.0
