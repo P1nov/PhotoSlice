@@ -46,16 +46,21 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     
     //MARK: lifeCycle
     
-//    convenience init(maxSelectNum : Int) {
-//
-//        self.init()
-//
-//        self.maxSelect = maxSelectNum
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        PNProgressHUD.loading(at: nil)
+        
+        PSImageHandleManager.shared.getRealImageFromAssets { (images, resource) in
+            
+            PNProgressHUD.hideLoading(from: nil)
+            
+            self.images = images
+            self.resource = resource
+        }
+        
+        updateToolBarState()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,18 +90,6 @@ class PSUserPhotosViewController: BaseCollectionViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "取消", style: .plain, target: self, action: #selector(closeCurrent))
         
         collectionView.register(PSUserPhotoCollectionViewCell.self, forCellWithReuseIdentifier: PSUserPhotoCollectionViewCellIdentifier)
-        
-        PNProgressHUD.loading(at: nil)
-        
-        PSImageHandleManager.shared.getRealImageFromAssets { (images, resource) in
-            
-            PNProgressHUD.hideLoading(from: nil)
-            
-            self.images = images
-            self.resource = resource
-        }
-        
-        updateToolBarState()
         
     }
     

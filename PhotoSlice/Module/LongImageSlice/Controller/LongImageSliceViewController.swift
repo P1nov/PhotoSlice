@@ -14,6 +14,7 @@ private let PSLongImageSliceCollectionViewCellIdentifier = "PSLongImageSliceColl
 class LongImageSliceViewController: BaseCollectionViewController {
     
     private var selectAssets : [Int : PHAsset] = [:]
+    var selectedImages : [UIImage]? = []
     
     var isOperated : Bool = false
     
@@ -27,15 +28,13 @@ class LongImageSliceViewController: BaseCollectionViewController {
     var lastImage : UIImage?
 
     //MARK: lazyLoad
-    var selectedImages : [UIImage]? = []
-    
-    lazy var completeButton: UIButton = {
+    lazy var toolBar: PSImageToolBar = {
+        let toolBar = PSImageToolBar.init(frame: CGRect(x: 0, y: self.view.frame.height - (Scale(50) + kSafeBottomHeight()), width: self.view.frame.width, height: Scale(50) + kSafeBottomHeight()))
         
-        let button = UIButton()
-        button.setImage(UIImage(named: "complete_slice"), for: .normal)
-        button.addTarget(self, action: #selector(completeSliceImage), for: .touchUpInside)
+        toolBar.confirmButton.addTarget(self, action: #selector(completeSliceImage), for: .touchUpInside)
+        toolBar.previewButton.isHidden = true
         
-        return button
+        return toolBar
     }()
     
     
@@ -73,24 +72,21 @@ class LongImageSliceViewController: BaseCollectionViewController {
         
         collectionView.reloadData()
         
-        self.view.addSubview(completeButton)
-        
-        completeButton.snp.makeConstraints { (make) in
-            
-            make.right.bottom.equalToSuperview().offset(-Scale(15))
-            make.width.height.equalTo(Scale(30))
-        }
+        self.view.addSubview(toolBar)
         
         let longPress = UILongPressGestureRecognizer.init(target: self, action: #selector(handle(longPress:)))
         
         collectionView.addGestureRecognizer(longPress)
+        
+        updateToolBarState()
         
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        collectionView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
+        collectionView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height - toolBar.frame.height - kSafeBottomHeight())
+        toolBar.frame = CGRect(x: 0, y: collectionView.frame.height, width: self.view.frame.width, height: Scale(50) + kSafeBottomHeight())
     }
     
     //MARK: delegate & dataSource
@@ -118,43 +114,64 @@ class LongImageSliceViewController: BaseCollectionViewController {
         })
         
         collectionView.reloadData()
+        
+        updateToolBarState()
     }
     
     //MARK: action
-    @objc private func closeSlice() {
+    
+    //MARK: dealloc
+    deinit {
+        removeNotificationObserver()
+    }
+
+}
+
+extension LongImageSliceViewController {
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         
-        self.dismiss(animated: true, completion: nil)
+        1
     }
     
-    @objc private func toUserAlbum() {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        let controller = PSUserPhotosViewController()
-        controller.maxSelect = 7
-        controller.selectAssets = self.selectAssets
-        
-        self.navigationController?.pushViewController(controller, animated: true)
+        selectedImages?.count ?? 0
     }
     
-    @objc private func completeSliceImage() {
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if selectedImages!.count > 0 {
-            
-            let controller = PSLongImageSliceCompletedViewController(finalImages: selectedImages!)
-            
-            self.navigationController?.pushViewController(controller, animated: true)
-        }else {
-            
-            PNProgressHUD.present(with: "您还未选择图片",
-                                  presentType: .fromTop,
-                                  font: UIFont.systemFont(ofSize: 14.0, weight: .medium),
-                                  backgroundColor: UIColor(rgb: 0xFF4B32),
-                                  textColor: .white,
-                                  in: nil)
-        }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PSLongImageSliceCollectionViewCellIdentifier, for: indexPath) as! PSLongImageSliceCollectionViewCell
         
+        cell.imageView.image = selectedImages![indexPath.row]
+        cell.deleteButton.addTarget(self, action: #selector(deleteItem(button:)), for: .touchUpInside)
+        cell.deleteButton.tag = indexPath.row
+        cell.image = selectedImages![indexPath.row]
+
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        
+        Scale(2)
     }
     
-    @objc private func handle(longPress : UILongPressGestureRecognizer) {
+    
+}
+
+@objc
+private extension LongImageSliceViewController {
+    
+    private func deleteItem(button : UIButton) {
+        
+        selectedImages?.remove(at: button.tag)
+        
+        collectionView.reloadData()
+        
+        updateToolBarState()
+    }
+    
+    private func handle(longPress : UILongPressGestureRecognizer) {
         
         switch longPress.state {
         case .began:
@@ -163,7 +180,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
             
             guard let indexPath = collectionView.indexPathForItem(at: longPress.location(in: collectionView)) else {
                 
-                return 
+                return
             }
             
             collectionView.beginInteractiveMovementForItem(at: indexPath)
@@ -260,47 +277,50 @@ class LongImageSliceViewController: BaseCollectionViewController {
         }
     }
     
-    //MARK: dealloc
-    deinit {
-        removeNotificationObserver()
-    }
-
-}
-
-extension LongImageSliceViewController {
-    
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+    private func closeSlice() {
         
-        1
+        self.dismiss(animated: true, completion: nil)
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    private func toUserAlbum() {
         
-        selectedImages?.count ?? 0
+        let controller = PSUserPhotosViewController()
+        controller.maxSelect = 7
+        controller.selectAssets = self.selectAssets
+        
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    private func completeSliceImage() {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PSLongImageSliceCollectionViewCellIdentifier, for: indexPath) as! PSLongImageSliceCollectionViewCell
+        if selectedImages!.count > 0 {
+            
+            let controller = PSLongImageSliceCompletedViewController(finalImages: selectedImages!)
+            
+            self.navigationController?.pushViewController(controller, animated: true)
+        }else {
+            
+            PNProgressHUD.present(with: "您还未选择图片",
+                                  presentType: .fromTop,
+                                  font: UIFont.systemFont(ofSize: 14.0, weight: .medium),
+                                  backgroundColor: UIColor(rgb: 0xFF4B32),
+                                  textColor: .white,
+                                  in: nil)
+        }
         
-        cell.imageView.image = selectedImages![indexPath.row]
-        cell.deleteButton.addTarget(self, action: #selector(deleteItem(button:)), for: .touchUpInside)
-        cell.deleteButton.tag = indexPath.row
-        cell.image = selectedImages![indexPath.row]
-
-        return cell
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        
-        Scale(2)
     }
     
-    @objc private func deleteItem(button : UIButton) {
+    func updateToolBarState() {
         
-        selectedImages?.remove(at: button.tag)
+        if selectedImages!.count > 0 {
+            
+            toolBar.confirmButton.isEnabled = true
+        }else {
+            
+            toolBar.confirmButton.isEnabled = false
+        }
         
-        collectionView.reloadData()
+        toolBar.confirmButton.setTitle("完成", for: .normal)
     }
     
 }
