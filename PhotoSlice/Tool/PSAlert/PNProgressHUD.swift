@@ -96,19 +96,7 @@ class PNProgressHUD: NSObject {
         
         if superView == nil {
             
-            var keyWindow : UIWindow?
-            
-            for window in UIApplication.shared.windows {
-                if (window.isKeyWindow) {
-                    // you have the key window
-                    
-                    keyWindow = window
-                    
-                    break;
-                }
-            }
-            
-            guard let currentWindow = keyWindow else {
+            guard let currentWindow = UIApplication.shared.keyWindow else {
                 
                 return
             }
@@ -178,19 +166,7 @@ class PNProgressHUD: NSObject {
         
         if superView == nil {
             
-            var keyWindow : UIWindow?
-            
-            for window in UIApplication.shared.windows {
-                if (window.isKeyWindow) {
-                    // you have the key window
-                    
-                    keyWindow = window
-                    
-                    break;
-                }
-            }
-            
-            guard let currentWindow = keyWindow else {
+            guard let currentWindow = UIApplication.shared.keyWindow else {
                 
                 return
             }

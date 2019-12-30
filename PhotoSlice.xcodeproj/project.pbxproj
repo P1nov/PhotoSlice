@@ -22,7 +22,6 @@
 		0497151623B4A4CC005F1D13 /* PSLongImageSliceCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0497151523B4A4CC005F1D13 /* PSLongImageSliceCollectionViewCell.swift */; };
 		0497151823B4A94E005F1D13 /* PSLongImageSliceCompletedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0497151723B4A94E005F1D13 /* PSLongImageSliceCompletedViewController.swift */; };
 		04FC194F23B3115D00F511CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FC194E23B3115D00F511CA /* AppDelegate.swift */; };
-		04FC195123B3115D00F511CA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FC195023B3115D00F511CA /* SceneDelegate.swift */; };
 		04FC195523B3115F00F511CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04FC195423B3115F00F511CA /* Assets.xcassets */; };
 		04FC195823B3115F00F511CA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04FC195723B3115F00F511CA /* Preview Assets.xcassets */; };
 		04FC195B23B3115F00F511CA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04FC195923B3115F00F511CA /* LaunchScreen.storyboard */; };
@@ -83,7 +82,6 @@
 		0497151723B4A94E005F1D13 /* PSLongImageSliceCompletedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSLongImageSliceCompletedViewController.swift; sourceTree = "<group>"; };
 		04FC194B23B3115D00F511CA /* PhotoSlice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoSlice.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04FC194E23B3115D00F511CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		04FC195023B3115D00F511CA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		04FC195423B3115F00F511CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		04FC195723B3115F00F511CA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		04FC195A23B3115F00F511CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -253,7 +251,6 @@
 				04FC198223B312BE00F511CA /* Base */,
 				04FC197E23B311E200F511CA /* Module */,
 				04FC194E23B3115D00F511CA /* AppDelegate.swift */,
-				04FC195023B3115D00F511CA /* SceneDelegate.swift */,
 				04FC195423B3115F00F511CA /* Assets.xcassets */,
 				04FC195923B3115F00F511CA /* LaunchScreen.storyboard */,
 				04FC195C23B3115F00F511CA /* Info.plist */,
@@ -711,7 +708,6 @@
 				048B3E6423B48A160005EF26 /* PSImageHandleManager.swift in Sources */,
 				04FC19AD23B3674700F511CA /* YDPresentationController.swift in Sources */,
 				045C5C2323B5E1750029E4A7 /* LSDMidIndicatorView.swift in Sources */,
-				04FC195123B3115D00F511CA /* SceneDelegate.swift in Sources */,
 				04FC198C23B3140500F511CA /* UIImage+Extension.swift in Sources */,
 				04FC19A223B33E3800F511CA /* UIColor+Extension.swift in Sources */,
 				0497151423B49BD7005F1D13 /* PSUserPhotoCollectionViewCell.swift in Sources */,
