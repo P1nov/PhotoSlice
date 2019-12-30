@@ -9,9 +9,13 @@
 import UIKit
 import Photos
 
+typealias SelectAlbumCallBack = (_ album : PHAssetCollection) -> Void
+
 class PSUserAlbumViewController: BaseTableViewController {
     
     var userAlbums : PHFetchResult<PHAssetCollection>?
+    
+    var didSelectAlbumCallBack : SelectAlbumCallBack?
 
     //MARK: lazyLoad
     
@@ -72,21 +76,20 @@ extension PSUserAlbumViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: BaseTableViewCellIdentifier, for: indexPath)
         
-        cell.textLabel?.text = userAlbums?.object(at: indexPath.row).localizedLocationNames.first ?? ""
+        cell.textLabel?.text = userAlbums?.object(at: indexPath.row).localizedTitle ?? ""
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        Scale(40)
+        Scale(50)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let controller = PSUserPhotosViewController()
-        controller.album = userAlbums?.object(at: indexPath.row)
+        self.didSelectAlbumCallBack!(userAlbums!.object(at: indexPath.row))
         
-        self.navigationController?.pushViewController(controller, animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
 }

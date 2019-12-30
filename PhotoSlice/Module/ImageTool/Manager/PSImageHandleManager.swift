@@ -52,7 +52,7 @@ class PSImageHandleManager: NSObject {
         let allPhotosOptions = PHFetchOptions()
         allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
-        let smartAlbums = PHAssetCollection.fetchAssetCollections(with: PHAssetCollectionType.init(rawValue: PHAssetCollectionType.smartAlbum.rawValue | PHAssetCollectionType.album.rawValue)!,
+        let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum,
                                                                   subtype: .albumRegular,
                                                                   options: nil)
         
@@ -87,7 +87,7 @@ class PSImageHandleManager: NSObject {
     func directGetPhotos(album : PHAssetCollection) -> PHFetchResult<PHAsset> {
         
         let photosOption = PHFetchOptions()
-        photosOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        photosOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
         let photos = PHAsset.fetchAssets(in: album,
                                          options: photosOption)
@@ -98,12 +98,58 @@ class PSImageHandleManager: NSObject {
     func getPhotosFromAlbum(album : PHAssetCollection, completion : (_ photos : PHFetchResult<PHAsset>) -> Void) {
         
         let photosOption = PHFetchOptions()
-        photosOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        photosOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
         let photos = PHAsset.fetchAssets(in: album,
                                          options: photosOption)
         
         completion(photos)
+    }
+    
+    func exchangePhotos(with album : PHAssetCollection, completion : (_ images : [UIImage]) -> Void) {
+        
+        let photosOption = PHFetchOptions()
+        photosOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        
+        let photos = PHAsset.fetchAssets(in: album,
+                                         options: photosOption)
+        
+        var images = [UIImage]()
+        
+        let options = PHImageRequestOptions()
+        
+        options.isSynchronous = true
+        options.resizeMode = .exact
+        options.isNetworkAccessAllowed = false
+        
+        if photos.count == 0 {
+            
+            completion([])
+        }else {
+            
+            for index in 0 ..< photos.count {
+                
+                PHImageManager.default().requestImage(for: photos[index],
+                                                      targetSize: CGSize(width: (UIScreen.main.scale * kScreenWidth - Scale(5)) / 5.0, height: (UIScreen.main.scale * kScreenWidth - Scale(5)) / 5.0),
+                                                      contentMode: .aspectFill,
+                                                      options: options) { (image, info) in
+                    
+                    guard let originalImage = image else {
+                        
+                        return
+                    }
+                    
+                    images.append(originalImage)
+                }
+                
+                if index == photos.count - 1 {
+                    
+                    completion(images)
+                }
+            }
+        }
+        
+        
     }
     
     func getAspectFillWidthImage(image1 : UIImage, width : CGFloat) -> UIImage {

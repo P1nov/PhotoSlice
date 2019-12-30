@@ -271,6 +271,29 @@ private extension PSUserPhotosViewController {
             let controller = PSUserAlbumViewController()
             controller.userAlbums = albums
             
+            controller.didSelectAlbumCallBack = { (album) in
+                
+                PSImageHandleManager.shared.exchangePhotos(with: album) { (images) in
+                    
+                    if images.count == 0 {
+                        
+                        PNProgressHUD.present(with: "此相册没有照片！",
+                                              presentType: .fromTop,
+                                              font: .systemFont(ofSize: 15.0, weight: .medium),
+                                              backgroundColor: UIColor(rgb: 0xFF4B32),
+                                              textColor: .white,
+                                              in: nil)
+                    }else {
+                        
+                        self.images = images
+                        
+                        self.collectionView.reloadData()
+                    }
+                    
+                    
+                }
+            }
+            
             self.navigationController?.pushViewController(controller, animated: true)
         }
     }
