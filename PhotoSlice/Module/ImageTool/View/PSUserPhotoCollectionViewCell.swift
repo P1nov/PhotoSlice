@@ -57,6 +57,8 @@ class PSUserPhotoCollectionViewCell: UICollectionViewCell {
             make.right.equalToSuperview().offset(-Scale(10))
             make.width.height.equalTo(Scale(20))
         }
+        
+        
     }
     
     required init?(coder: NSCoder) {
@@ -67,6 +69,8 @@ class PSUserPhotoCollectionViewCell: UICollectionViewCell {
         super.updateConstraints()
         
     }
+    
+    
 }
 
 @objc

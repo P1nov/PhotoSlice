@@ -8,6 +8,7 @@
 
 import UIKit
 
+typealias DeleteImageCallBack = () -> Void
 
 class PSLongImageSliceCollectionViewCell: UICollectionViewCell {
     
@@ -20,8 +21,12 @@ class PSLongImageSliceCollectionViewCell: UICollectionViewCell {
     
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
+        
+        scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         return scrollView
     }()
+    
+    var deleteImageCallBack : DeleteImageCallBack?
     
     var image : UIImage? {
         
@@ -61,6 +66,8 @@ class PSLongImageSliceCollectionViewCell: UICollectionViewCell {
         
         button.clipsToBounds = true
         button.layer.cornerRadius = Scale(15)
+        
+        button.addTarget(self, action: #selector(deleteItem), for: .touchUpInside)
         return button
     }()
     
@@ -92,10 +99,56 @@ class PSLongImageSliceCollectionViewCell: UICollectionViewCell {
             make.width.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
+        layoutIfNeeded()
+        
+        setZoomScale(scrollViewSize: scrollView.bounds.size)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        setZoomScale(scrollViewSize: scrollView.bounds.size)
+        
+        if scrollView.zoomScale < scrollView.minimumZoomScale {
+            
+            scrollView.zoomScale = scrollView.minimumZoomScale
+        }
+    }
+    
+    private func recenterImage() {
+        
+        let scrollViewSize = scrollView.bounds.size
+        let imageViewSize = imageView.frame.size
+        let horizontalSpace = imageViewSize.width < scrollViewSize.width ? (scrollViewSize.width - imageViewSize.width) / 2.0 : 0
+        let verticalSpace = imageViewSize.height < scrollViewSize.height ? (scrollViewSize.height - imageViewSize.width) / 2.0 : 0
+        
+        scrollView.contentInset = UIEdgeInsets(top: verticalSpace, left: horizontalSpace, bottom: verticalSpace, right: horizontalSpace)
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setZoomScale(scrollViewSize : CGSize) {
+        
+        let imageSize = imageView.bounds.size
+        let widthScale = scrollViewSize.width / imageSize.width
+        let heightScale = scrollViewSize.height / imageSize.height
+        let minimunScale = min(widthScale, heightScale)
+        
+        self.scrollView.minimumZoomScale = minimunScale
+        self.scrollView.maximumZoomScale = 3.0
+    }
+    
+}
+
+@objc
+private extension PSLongImageSliceCollectionViewCell {
+    
+    func deleteItem() {
+        
+        deleteImageCallBack!()
+    }
 }

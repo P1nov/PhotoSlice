@@ -59,20 +59,44 @@ class PSImageHandleManager: NSObject {
         completion(smartAlbums)
     }
     
+    func getImageFromAsset(asset : PHAsset, completion : @escaping (_ image: UIImage) -> Void) {
+        
+        let imageRequestoptions = PHImageRequestOptions()
+        
+        imageRequestoptions.isSynchronous = true
+        imageRequestoptions.resizeMode = .none
+        imageRequestoptions.isNetworkAccessAllowed = false;
+        imageRequestoptions.isSynchronous = true
+        
+        PHImageManager.default().requestImageData(for: asset, options: imageRequestoptions) { (imageData, string, orientation, info) in
+            
+            guard let originalImageData = imageData else {
+                
+                return
+            }
+            
+            let image = UIImage(data: originalImageData)
+            
+            completion(image!)
+        }
+    }
+    
     func getImageFromAssets(options : PHImageRequestOptions, assets : [PHAsset], completion : (_ images : [UIImage]) -> Void) {
         
         var images = [UIImage]()
         
         for index in 0 ..< assets.count {
             
-            PHImageManager.default().requestImage(for: assets[index], targetSize: .zero, contentMode: .aspectFill, options: options) { (image, info) in
+            PHImageManager.default().requestImageData(for: assets[index], options: options) { (imageData, string, orientation, info) in
                 
-                guard let originalImage = image else {
+                guard let originalImageData = imageData else {
                     
                     return
                 }
                 
-                images.append(originalImage)
+                let image = UIImage(data: originalImageData)
+                
+                images.append(image!)
             }
             
             if index == assets.count - 1 {
@@ -80,8 +104,6 @@ class PSImageHandleManager: NSObject {
                 completion(images)
             }
         }
-        
-        
     }
     
     func directGetPhotos(album : PHAssetCollection) -> PHFetchResult<PHAsset> {

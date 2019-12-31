@@ -144,9 +144,38 @@ extension LongImageSliceViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PSLongImageSliceCollectionViewCellIdentifier, for: indexPath) as! PSLongImageSliceCollectionViewCell
         
         cell.imageView.image = selectedImages![indexPath.row]
-        cell.deleteButton.addTarget(self, action: #selector(deleteItem(button:)), for: .touchUpInside)
         cell.deleteButton.tag = indexPath.row
         cell.image = selectedImages![indexPath.row]
+        
+        cell.deleteImageCallBack = {
+            
+            PNProgressHUD.loading(at: nil)
+            
+            DispatchQueue.global().async {
+
+                for key in self.selectAssets.keys {
+                    
+                    PSImageHandleManager.shared.getImageFromAsset(asset: self.selectAssets[key]!) { (assetImage) in
+                        
+                        if assetImage.isEqual(self.selectedImages![indexPath.row]) {
+                            
+                            self.selectAssets.removeValue(forKey: key)
+                        }
+                    }
+                }
+            }
+
+            self.selectedImages?.remove(at: indexPath.row)
+            
+            DispatchQueue.main.async {
+                
+                PNProgressHUD.hideLoading(from: nil)
+                
+                collectionView.reloadData()
+                
+                self.updateToolBarState()
+            }
+        }
 
         return cell
     }
@@ -161,15 +190,6 @@ extension LongImageSliceViewController {
 
 @objc
 private extension LongImageSliceViewController {
-    
-    private func deleteItem(button : UIButton) {
-        
-        selectedImages?.remove(at: button.tag)
-        
-        collectionView.reloadData()
-        
-        updateToolBarState()
-    }
     
     private func handle(longPress : UILongPressGestureRecognizer) {
         
@@ -285,7 +305,7 @@ private extension LongImageSliceViewController {
     private func toUserAlbum() {
         
         let controller = PSUserPhotosViewController()
-        controller.maxSelect = 7
+        controller.maxSelect = 9
         controller.selectAssets = self.selectAssets
         
         self.navigationController?.pushViewController(controller, animated: true)

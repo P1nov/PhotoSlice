@@ -10,6 +10,7 @@
 		045C5C2323B5E1750029E4A7 /* LSDMidIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045C5C2223B5E1750029E4A7 /* LSDMidIndicatorView.swift */; };
 		045C5C2523B5E1DC0029E4A7 /* LSDIndicatorCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045C5C2423B5E1DC0029E4A7 /* LSDIndicatorCustom.swift */; };
 		045C5C2723B5F4220029E4A7 /* PNProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045C5C2623B5F4220029E4A7 /* PNProgressHUD.swift */; };
+		045F6C1F23BB26D200C98AE6 /* PSLongImageScaleSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045F6C1E23BB26D200C98AE6 /* PSLongImageScaleSelectViewController.swift */; };
 		046E1D2923B59A19007A08DA /* PSOperationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2823B59A19007A08DA /* PSOperationContentView.swift */; };
 		046E1D2B23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */; };
 		046E1D2D23B5DAF0007A08DA /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2C23B5DAF0007A08DA /* BaseNavigationController.swift */; };
@@ -69,6 +70,7 @@
 		045C5C2223B5E1750029E4A7 /* LSDMidIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LSDMidIndicatorView.swift; sourceTree = "<group>"; };
 		045C5C2423B5E1DC0029E4A7 /* LSDIndicatorCustom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LSDIndicatorCustom.swift; sourceTree = "<group>"; };
 		045C5C2623B5F4220029E4A7 /* PNProgressHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNProgressHUD.swift; sourceTree = "<group>"; };
+		045F6C1E23BB26D200C98AE6 /* PSLongImageScaleSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSLongImageScaleSelectViewController.swift; sourceTree = "<group>"; };
 		046E1D2823B59A19007A08DA /* PSOperationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSOperationContentView.swift; sourceTree = "<group>"; };
 		046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSLongImageSliceCompleteCollectionViewCell.swift; sourceTree = "<group>"; };
 		046E1D2C23B5DAF0007A08DA /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 			children = (
 				048B3E6A23B494750005EF26 /* LongImageSliceViewController.swift */,
 				0497151723B4A94E005F1D13 /* PSLongImageSliceCompletedViewController.swift */,
+				045F6C1E23BB26D200C98AE6 /* PSLongImageScaleSelectViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -685,6 +688,7 @@
 			files = (
 				048B3E6623B490A90005EF26 /* PSUserAlbumViewController.swift in Sources */,
 				046E1D2923B59A19007A08DA /* PSOperationContentView.swift in Sources */,
+				045F6C1F23BB26D200C98AE6 /* PSLongImageScaleSelectViewController.swift in Sources */,
 				04FC19A923B3566600F511CA /* PSRootTabBar.swift in Sources */,
 				046E1D2B23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift in Sources */,
 				045C5C2523B5E1DC0029E4A7 /* LSDIndicatorCustom.swift in Sources */,

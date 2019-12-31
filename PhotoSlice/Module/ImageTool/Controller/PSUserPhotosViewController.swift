@@ -260,6 +260,8 @@ private extension PSUserPhotosViewController {
             
             if let currentAssets = assets {
                 
+                self.imageRequeseOptions.resizeMode = .none
+                
                 PSImageHandleManager.shared.getImageFromAssets(options : self.imageRequeseOptions,
                                                                assets: currentAssets ) { (images) in
                     
