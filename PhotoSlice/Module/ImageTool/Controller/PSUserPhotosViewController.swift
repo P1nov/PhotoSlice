@@ -105,17 +105,48 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     //MARK: notification & observer
     override func addNotificationObserver() {
         
+        PHPhotoLibrary.shared().register(self)
     }
-    
-    //MARK: action
-    
-    
     
     //MARK: dealloc
     deinit {
         removeNotificationObserver()
     }
 
+}
+
+extension PSUserPhotosViewController : PHPhotoLibraryChangeObserver {
+    
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
+        
+        DispatchQueue.global().async {
+            
+            let collectionChanges = changeInstance.changeDetails(for: self.resource!.0)
+            
+            guard let changes = collectionChanges else {
+                
+                return
+            }
+            
+            if changes.removedObjects.count > 0 || changes.insertedObjects.count > 0 {
+                
+                DispatchQueue.main.async {
+                
+                    PNProgressHUD.loading(at: nil)
+                    
+                    PSImageHandleManager.shared.getRealImageFromAssets { (images, resource) in
+                        
+                        self.resource = resource
+                        self.images = images
+                            
+                            PNProgressHUD.hideLoading(from: nil)
+                            
+                            self.collectionView.reloadData()
+                        }
+                    }
+            }
+        }
+    }
 }
 
 extension PSUserPhotosViewController {
@@ -289,8 +320,6 @@ private extension PSUserPhotosViewController {
                         
                         self.collectionView.reloadData()
                     }
-                    
-                    
                 }
             }
             

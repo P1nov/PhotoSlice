@@ -246,15 +246,15 @@
 		04FC194D23B3115D00F511CA /* PhotoSlice */ = {
 			isa = PBXGroup;
 			children = (
-				04FC19AA23B3671000F511CA /* Tool */,
-				04FC198623B3138400F511CA /* Category */,
-				04FC198223B312BE00F511CA /* Base */,
-				04FC197E23B311E200F511CA /* Module */,
 				04FC194E23B3115D00F511CA /* AppDelegate.swift */,
 				04FC195423B3115F00F511CA /* Assets.xcassets */,
-				04FC195923B3115F00F511CA /* LaunchScreen.storyboard */,
+				04FC198223B312BE00F511CA /* Base */,
+				04FC198623B3138400F511CA /* Category */,
 				04FC195C23B3115F00F511CA /* Info.plist */,
+				04FC195923B3115F00F511CA /* LaunchScreen.storyboard */,
+				04FC197E23B311E200F511CA /* Module */,
 				04FC195623B3115F00F511CA /* Preview Content */,
+				04FC19AA23B3671000F511CA /* Tool */,
 			);
 			path = PhotoSlice;
 			sourceTree = "<group>";
