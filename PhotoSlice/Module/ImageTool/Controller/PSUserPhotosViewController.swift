@@ -282,14 +282,12 @@ private extension PSUserPhotosViewController {
         
         DispatchQueue.global().sync {
             
-            let assets = selectAssets?.map { it in it.value }
-            
-            if let currentAssets = assets {
+            if let currentAssets = self.selectAssets {
                 
                 self.imageRequeseOptions.resizeMode = .none
                 
                 PSImageHandleManager.shared.getImageFromAssetsDic(options : self.imageRequeseOptions,
-                                                                  assets: self.selectAssets! ) { (images) in
+                                                                  assets: currentAssets ) { (images) in
                     
                     DispatchQueue.main.async {
                         
