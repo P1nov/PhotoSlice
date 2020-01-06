@@ -26,7 +26,7 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     }
     
     private var selectImages : [Int : UIImage]? = [:]
-    var selectAssets : [Int : PHAsset]? = [:]
+    var selectAssets : [UIImage : PHAsset]? = [:]
     
     private var imageRequeseOptions = PHImageRequestOptions()
     
@@ -176,7 +176,7 @@ extension PSUserPhotosViewController {
             cell.selectBtn.isSelected = false
         }
         
-        if selectAssets![indexPath.row] != nil {
+        if selectAssets![self.images![indexPath.row]] != nil {
             
             cell.selectBtn.isSelected = true
         }else {
@@ -203,12 +203,12 @@ extension PSUserPhotosViewController {
                 
                 self.selectNum += 1
                 
-                self.selectAssets![indexPath.row] = cell.resource
+                self.selectAssets![self.images![indexPath.row]] = cell.resource
             }
             
             //取消选择图片
             if selected {
-                self.selectAssets?.removeValue(forKey: indexPath.row)
+                self.selectAssets?.removeValue(forKey: self.images![indexPath.row])
                 
                 self.selectNum -= 1
             }

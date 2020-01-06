@@ -96,7 +96,9 @@ class PSImageHandleManager: NSObject {
                 
                 let image = UIImage(data: originalImageData)
                 
-                images.append(image!)
+                let aspectImage = self.getAspectFillWidthImage(image1: image!, width: Scale(290))
+                
+                images.append(aspectImage)
             }
             
             if index == assets.count - 1 {

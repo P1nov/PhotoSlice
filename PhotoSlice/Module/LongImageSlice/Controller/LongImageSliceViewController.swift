@@ -13,7 +13,7 @@ private let PSLongImageSliceCollectionViewCellIdentifier = "PSLongImageSliceColl
 
 class LongImageSliceViewController: BaseCollectionViewController {
     
-    private var selectAssets : [Int : PHAsset] = [:]
+    private var selectAssets : [UIImage : PHAsset] = [:]
     var selectedImages : [UIImage]? = []
     
     var isOperated : Bool = false
@@ -101,7 +101,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
     @objc private func completedImageSelect(notification : Notification) {
         
         let images = notification.userInfo!["images"] as! [UIImage]
-        let assets = notification.userInfo!["assets"] as! [Int : PHAsset]
+        let assets = notification.userInfo!["assets"] as! [UIImage : PHAsset]
         
         selectedImages = images
         selectAssets = assets
@@ -149,32 +149,10 @@ extension LongImageSliceViewController {
         
         cell.deleteImageCallBack = {
             
-            PNProgressHUD.loading(at: nil)
-            
-            DispatchQueue.global().async {
-
-                for key in self.selectAssets.keys {
-                    
-                    PSImageHandleManager.shared.getImageFromAsset(asset: self.selectAssets[key]!) { (assetImage) in
-                        
-                        if assetImage.isEqual(self.selectedImages![indexPath.row]) {
-                            
-                            self.selectAssets.removeValue(forKey: key)
-                        }
-                    }
-                }
-            }
-
+            self.selectAssets.removeValue(forKey: self.selectedImages![indexPath.row])
             self.selectedImages?.remove(at: indexPath.row)
             
-            DispatchQueue.main.async {
-                
-                PNProgressHUD.hideLoading(from: nil)
-                
-                collectionView.reloadData()
-                
-                self.updateToolBarState()
-            }
+            collectionView.reloadData()
         }
 
         return cell
