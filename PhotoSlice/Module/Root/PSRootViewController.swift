@@ -78,6 +78,16 @@ extension PSRootViewController : PSRootTabBarDelegate, PSOperationViewDelegate {
         
         self.present(nav, animated: true, completion: nil)
     }
+    
+    func cameraClick(operationView: PSOperationView) {
+        
+        operationView.dismiss()
+        
+        let controller = PSUserCameraViewController()
+        let nav = BaseNavigationController.init(rootViewController: controller)
+        
+        self.present(nav, animated: true, completion: nil)
+    }
 }
 
 extension NSObject {

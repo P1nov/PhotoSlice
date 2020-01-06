@@ -10,7 +10,9 @@ import UIKit
 
 protocol PSOperationViewDelegate : NSObjectProtocol {
     
-    func longImageSlice(operationView : PSOperationView);
+    func longImageSlice(operationView : PSOperationView)
+    
+    func cameraClick(operationView : PSOperationView)
 }
 
 class PSOperationView: UIView {
@@ -35,6 +37,8 @@ class PSOperationView: UIView {
         button.frame.size = .init(width: Scale(40), height: Scale(40))
         button.frame.origin = .init(x: self.center.x - Scale(20), y: self.frame.height + Scale(10))
         button.setImage(UIImage(named: "add_new"), for: .normal)
+        
+        button.addTarget(self, action: #selector(cameraClick), for: .touchUpInside)
         
         return button
     }()
@@ -109,6 +113,11 @@ class PSOperationView: UIView {
     @objc private func longImageSliceClick() {
         
         self.operationViewDelegate?.longImageSlice(operationView: self)
+    }
+    
+    @objc private func cameraClick() {
+        
+        self.operationViewDelegate?.cameraClick(operationView: self)
     }
     
 }

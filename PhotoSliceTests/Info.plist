@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSContactsUsageDescription</key>
+	<string>允许</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>允许以使用您的相册</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>允许以使用麦克风</string>
+	<key>NSCameraUsageDescription</key>
+	<string>是否允许使用摄像头</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
