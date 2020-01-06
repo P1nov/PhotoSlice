@@ -26,14 +26,30 @@ class PSLongImageSliceCompletedViewController: BaseCollectionViewController {
         
     }
     
-    convenience init(finalImages : [UIImage]) {
+    convenience init(finalImages : [[Int : UIImage]]) {
         self.init()
         
-        images = finalImages
+        var currentImages : [UIImage]?
         
-        if images != nil  {
+        var isAppendAlready : Bool = false
+        
+        finalImages.enumerated().forEach { (index, dic) in
             
-            PSImageHandleManager.shared.sliceImage(with: images!) { (image) in
+            if !isAppendAlready {
+                
+                currentImages = []
+                isAppendAlready = true
+            }
+            
+            if let image = dic.first?.value {
+                
+                currentImages?.append(image)
+            }
+        }
+        
+        if let sliceImages = currentImages  {
+            
+            PSImageHandleManager.shared.sliceImage(with: sliceImages) { (image) in
                  
                 self.finalImage = image
                 

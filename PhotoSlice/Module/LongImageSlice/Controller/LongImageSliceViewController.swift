@@ -13,8 +13,8 @@ private let PSLongImageSliceCollectionViewCellIdentifier = "PSLongImageSliceColl
 
 class LongImageSliceViewController: BaseCollectionViewController {
     
-    private var selectAssets : [UIImage : PHAsset] = [:]
-    var selectedImages : [UIImage]? = []
+    private var selectAssets : [Int : PHAsset] = [:]
+    var selectedImages : [[Int : UIImage]]? = []
     
     var isOperated : Bool = false
     
@@ -22,7 +22,7 @@ class LongImageSliceViewController: BaseCollectionViewController {
     var currentCell : PSLongImageSliceCollectionViewCell?
     var changedCell : PSLongImageSliceCollectionViewCell?
     
-     var changeView : UIView?
+    var changeView : UIView?
     
     var firstImage : UIImage?
     var lastImage : UIImage?
@@ -100,18 +100,11 @@ class LongImageSliceViewController: BaseCollectionViewController {
     
     @objc private func completedImageSelect(notification : Notification) {
         
-        let images = notification.userInfo!["images"] as! [UIImage]
-        let assets = notification.userInfo!["assets"] as! [UIImage : PHAsset]
+        let images = notification.userInfo!["images"] as! [[Int : UIImage]]
+        let assets = notification.userInfo!["assets"] as! [Int : PHAsset]
         
         selectedImages = images
         selectAssets = assets
-        
-        selectedImages = selectedImages?.map({ (image) -> UIImage in
-            
-            let finalImage = PSImageHandleManager.shared.getAspectFillWidthImage(image1: image, width: Scale(290))
-            
-            return finalImage
-        })
         
         collectionView.reloadData()
         
@@ -143,13 +136,13 @@ extension LongImageSliceViewController {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PSLongImageSliceCollectionViewCellIdentifier, for: indexPath) as! PSLongImageSliceCollectionViewCell
         
-        cell.imageView.image = selectedImages![indexPath.row]
+        cell.imageView.image = selectedImages![indexPath.row].first?.value
         cell.deleteButton.tag = indexPath.row
-        cell.image = selectedImages![indexPath.row]
+        cell.image = selectedImages![indexPath.row].first?.value
         
         cell.deleteImageCallBack = {
             
-            self.selectAssets.removeValue(forKey: self.selectedImages![indexPath.row])
+            self.selectAssets.removeValue(forKey: indexPath.row)
             self.selectedImages?.remove(at: indexPath.row)
             
             collectionView.reloadData()
@@ -261,10 +254,10 @@ private extension LongImageSliceViewController {
                 
                 self.changeView?.removeFromSuperview()
                 
-                self.currentCell?.imageView.image = self.selectedImages![self.currentIndexPath!.item]
+                self.currentCell?.imageView.image = self.selectedImages![self.currentIndexPath!.item].first?.value
                 
                 let endCell = self.collectionView.cellForItem(at: endIndexPath!) as! PSLongImageSliceCollectionViewCell
-                endCell.imageView.image = self.selectedImages![endIndexPath!.item]
+                endCell.imageView.image = self.selectedImages![endIndexPath!.item].first?.value
                 endCell.contentView.layer.borderWidth = 0
                 
             }
@@ -282,9 +275,7 @@ private extension LongImageSliceViewController {
     
     private func toUserAlbum() {
         
-        let controller = PSUserPhotosViewController()
-        controller.maxSelect = 9
-        controller.selectAssets = self.selectAssets
+        let controller = PSUserPhotosViewController(maxSelect: 9, selectAssets: self.selectedImages, images: nil)
         
         self.navigationController?.pushViewController(controller, animated: true)
     }

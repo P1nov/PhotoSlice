@@ -25,8 +25,9 @@ class PSUserPhotosViewController: BaseCollectionViewController {
         }
     }
     
-    private var selectImages : [Int : UIImage]? = [:]
-    var selectAssets : [UIImage : PHAsset]? = [:]
+//    private var selectImages : [Int : UIImage]? = [:]
+    private var selectAssets : [Int : PHAsset]? = [:]
+    private var selectImageDics : [[Int : UIImage]]?
     
     private var imageRequeseOptions = PHImageRequestOptions()
     
@@ -45,6 +46,55 @@ class PSUserPhotosViewController: BaseCollectionViewController {
     }()
     
     //MARK: lifeCycle
+    
+    convenience init(maxSelect : Int?, selectAssets : [[Int : UIImage]]?, images : [UIImage]?) {
+        self.init()
+        
+        if let max = maxSelect {
+            
+            self.maxSelect = max
+        }
+        
+        if let assets = selectAssets {
+            
+            self.selectImageDics = assets
+        }
+        
+        if let imgs = images {
+            
+            self.images = imgs
+        }
+        
+        if PSImageHandleManager.isAuthorized() {
+            
+            PNProgressHUD.loading(at: nil)
+            
+            DispatchQueue.global().async {
+                
+                PSImageHandleManager.shared.getRealImageFromAssets { (images, resource) in
+                    
+                    DispatchQueue.main.async {
+                        
+                        PNProgressHUD.hideLoading(from: nil)
+                        
+                        self.images = images
+                        self.resource = resource
+                        
+                        self.updateToolBarState()
+                    }
+                }
+            }
+        }else {
+            
+            PSImageHandleManager.shared.requestAuthorization { (images, resource) in
+                
+                self.images = images
+                self.resource = resource
+                
+                self.updateToolBarState()
+            }
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -79,25 +129,6 @@ class PSUserPhotosViewController: BaseCollectionViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "取消", style: .plain, target: self, action: #selector(closeCurrent))
         
         collectionView.register(PSUserPhotoCollectionViewCell.self, forCellWithReuseIdentifier: PSUserPhotoCollectionViewCellIdentifier)
-        
-        PNProgressHUD.loading(at: nil)
-        
-        DispatchQueue.global().async {
-            
-            PSImageHandleManager.shared.getRealImageFromAssets { (images, resource) in
-                
-                DispatchQueue.main.async {
-                    
-                    PNProgressHUD.hideLoading(from: nil)
-                    
-                    self.images = images
-                    self.resource = resource
-                    
-                    self.updateToolBarState()
-                }
-            }
-        }
-        
     }
     
     //MARK: delegate & dataSource
@@ -168,20 +199,15 @@ extension PSUserPhotosViewController {
         cell.imageView.image = UIImage.image(with: .orange)
         cell.resource = resource?.0[indexPath.row]
         
-        if selectImages![indexPath.row] != nil {
+        if self.selectImageDics != nil {
             
-            cell.selectBtn.isSelected = true
-        }else {
-            
-            cell.selectBtn.isSelected = false
-        }
-        
-        if selectAssets![self.images![indexPath.row]] != nil {
-            
-            cell.selectBtn.isSelected = true
-        }else {
-            
-            cell.selectBtn.isSelected = false
+            if imageHaveSelected(row: indexPath.row) {
+                
+                cell.selectBtn.isSelected = true
+            }else {
+                
+                cell.selectBtn.isSelected = false
+            }
         }
         
         //加载cell上的图片（缩略图）
@@ -203,12 +229,12 @@ extension PSUserPhotosViewController {
                 
                 self.selectNum += 1
                 
-                self.selectAssets![self.images![indexPath.row]] = cell.resource
+                self.selectAssets![indexPath.row] = cell.resource
             }
             
             //取消选择图片
             if selected {
-                self.selectAssets?.removeValue(forKey: self.images![indexPath.row])
+                self.selectAssets?.removeValue(forKey: indexPath.row)
                 
                 self.selectNum -= 1
             }
@@ -262,8 +288,8 @@ private extension PSUserPhotosViewController {
                 
                 self.imageRequeseOptions.resizeMode = .none
                 
-                PSImageHandleManager.shared.getImageFromAssets(options : self.imageRequeseOptions,
-                                                               assets: currentAssets ) { (images) in
+                PSImageHandleManager.shared.getImageFromAssetsDic(options : self.imageRequeseOptions,
+                                                                  assets: self.selectAssets! ) { (images) in
                     
                     DispatchQueue.main.async {
                         
@@ -358,5 +384,31 @@ private extension PSUserPhotosViewController {
             
             toolBar.confirmButton.isEnabled = true
         }
+    }
+}
+
+extension PSUserPhotosViewController {
+    
+    private func imageHaveSelected(row : Int) -> Bool {
+        
+        var haveSelected : Bool? = false
+        
+        guard let selectImageDicss = self.selectImageDics else {
+            
+            return false
+        }
+        
+        selectImageDicss.forEach { (imageDic) in
+            
+            if imageDic[row] != nil {
+                
+                haveSelected = true
+            }else {
+                
+                haveSelected = false
+            }
+        }
+        
+        return haveSelected!
     }
 }

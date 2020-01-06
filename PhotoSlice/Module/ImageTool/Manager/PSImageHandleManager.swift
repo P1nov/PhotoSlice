@@ -28,17 +28,55 @@ class PSImageHandleManager: NSObject {
             PHPhotoLibrary.authorizationStatus() == .notDetermined
     }
     
+    func requestAuthorization(completion : @escaping (_ images : [UIImage]?, _ resource : (PHFetchResult<PHAsset>, PHFetchResult<PHAssetCollection>, PHFetchResult<PHCollection>)?) -> Void) {
+        
+        PHPhotoLibrary.requestAuthorization { (status) in
+            
+            switch(status) {
+                
+            case .authorized:
+                PNProgressHUD.loading(at: nil)
+                
+                DispatchQueue.global().async {
+                    
+                    PSImageHandleManager.shared.getRealImageFromAssets { (images, resource) in
+                        
+                        DispatchQueue.main.async {
+                            
+                            PNProgressHUD.hideLoading(from: nil)
+                            
+                            completion(images, resource)
+                        }
+                    }
+                }
+                break
+            case .denied, .restricted:
+                PNProgressHUD.present(with: "您未授权APP使用相册", presentType: .popup, font: UIFont.systemFont(ofSize: 14.0, weight: .medium), backgroundColor: UIColor(white: 0, alpha: 0.5), textColor: .white, in: nil)
+            case .notDetermined:
+                self.requestAuthorization { (images, resource) in
+                    
+                    if let currentImages = images, let currentResource = resource {
+                        
+                        completion(currentImages, currentResource)
+                    }
+                }
+            default:
+                break
+            }
+        }
+    }
+    
     func getAllUserAlbum() -> (PHFetchResult<PHAsset>, PHFetchResult<PHAssetCollection>, PHFetchResult<PHCollection>) {
         
         let allPhotosOptions = PHFetchOptions()
         allPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         
-        // 获取所有照片
-        let allPhotos = PHAsset.fetchAssets(with: allPhotosOptions)
+        // 获取所有照片(只包含图片 不包含视频或者其他类型)
+        let allPhotos = PHAsset.fetchAssets(with: .image, options: allPhotosOptions)
         
         // 获取智能相册
         let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum,
-                                                                  subtype: .albumRegular,
+                                                                  subtype: .smartAlbumUserLibrary,
                                                                   options: nil)
         
         // 获取用户创建的所有相册
@@ -104,6 +142,39 @@ class PSImageHandleManager: NSObject {
             if index == assets.count - 1 {
                 
                 completion(images)
+            }
+        }
+    }
+    
+    func getImageFromAssetsDic(options : PHImageRequestOptions, assets : [Int :PHAsset], completion : @escaping (_ imageDics : [[Int : UIImage]]) -> Void) {
+        
+        var images = [UIImage]()
+        
+        var selectImageDics : [[ Int : UIImage ]] = []
+        
+        assets.keys.enumerated().forEach { (index, key) in
+            
+            PHImageManager.default().requestImageData(for: assets[key]!, options: options) { (imageData, string, orientation, info) in
+                
+                guard let originalImageData = imageData else {
+                    
+                    return
+                }
+                
+                let image = UIImage(data: originalImageData)
+                
+                let aspectImage = self.getAspectFillWidthImage(image1: image!, width: Scale(290))
+                
+                images.append(aspectImage)
+                
+                let dic = [key : aspectImage]
+                
+                selectImageDics.append(dic)
+                
+                if index == assets.keys.count - 1 {
+                    
+                    completion(selectImageDics)
+                }
             }
         }
     }
