@@ -35,13 +35,20 @@ class PSCameraView: UIView {
         return button
     }()
     
+    lazy var colorControlView: PSImageColorControlView = {
+        
+        let controlView = PSImageColorControlView.init(frame: CGRect(x: 0, y: self.bounds.height, width: self.bounds.width, height: 190 + kSafeBottomHeight()))
+        controlView.colorDelegate = self
+        return controlView
+    }()
+    
     private var videoDimension : CMVideoDimensions?
     private var currentTime : CMTime?
     private var outputImage : UIImage?
     
     private var ciContext : CIContext = CIContext.init()
     
-    private var filter : CIFilter?
+    var filter : CIFilter?
     
     weak var cameraDelegate : PSCameraDelegate?
     
@@ -147,14 +154,46 @@ class PSCameraView: UIView {
         
         self.layer.addSublayer(self.previewLayer)
         
-        self.addSubview(self.shotButton)
+        self.addSubview(shotButton)
         
         shotButton.snp.makeConstraints { (make) in
             
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-Scale(50))
+            make.bottom.equalToSuperview().offset(-Scale(50) - kSafeBottomHeight())
             make.height.width.equalTo(Scale(50))
         }
+    }
+    
+    func presentColorControlView() {
+        
+        self.addSubview(self.colorControlView)
+        colorControlView.alpha = 0.0
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            
+            self.colorControlView.alpha = 1.0
+            self.colorControlView.frame = CGRect(x: 0, y: self.bounds.height - 190 - kSafeBottomHeight(), width: self.bounds.width, height: 190 + kSafeBottomHeight())
+        }) { (completed) in
+            
+        }
+    }
+    
+    private func dismissColorControlView() {
+        
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            
+            self.colorControlView.alpha = 0.0
+            self.colorControlView.frame = CGRect(x: 0, y: self.bounds.height, width: self.bounds.width, height: 190 + kSafeBottomHeight())
+        }) { (completed) in
+            
+            self.colorControlView.removeFromSuperview()
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        dismissColorControlView()
     }
     
     required init?(coder: NSCoder) {
@@ -168,7 +207,7 @@ class PSCameraView: UIView {
     
 }
 
-extension PSCameraView : AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
+extension PSCameraView : AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, PSImageColorControlDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
@@ -186,7 +225,7 @@ extension PSCameraView : AVCaptureVideoDataOutputSampleBufferDelegate, AVCapture
         }
     }
     
-    private func imageFromBuffer( sampleBuffer : CMSampleBuffer) {
+    private func imageFromBuffer(sampleBuffer : CMSampleBuffer) {
         
         let imageBuffer : CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
         let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
@@ -200,7 +239,25 @@ extension PSCameraView : AVCaptureVideoDataOutputSampleBufferDelegate, AVCapture
             
             currentFilter.setValue(result, forKey: kCIInputImageKey)
             
-            result = currentFilter.outputImage ?? result
+            currentFilter.setValue(self.colorControlView.x, forKey: kCIInputBrightnessKey)
+            currentFilter.setValue(self.colorControlView.y, forKey: kCIInputSaturationKey)
+            currentFilter.setValue(self.colorControlView.z, forKey: kCIInputContrastKey)
+            
+            if var ciImage = currentFilter.outputImage {
+                
+                ciImage = ciImage.transformed(by: CGAffineTransform.init(rotationAngle: -.pi / 2))
+                
+                let cgImage = ciContext.createCGImage(ciImage, from: ciImage.extent)
+                
+                DispatchQueue.main.async {
+                    
+                    self.previewLayer.contents = cgImage
+                }
+                
+                outputImage = UIImage.init(cgImage: cgImage!)
+                
+                return
+            }
         }
         
         result = result.transformed(by: CGAffineTransform.init(rotationAngle: -.pi / 2))
@@ -209,10 +266,17 @@ extension PSCameraView : AVCaptureVideoDataOutputSampleBufferDelegate, AVCapture
         
         outputImage = UIImage.init(cgImage: cgImage!)
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             
             self.previewLayer.contents = cgImage
         }
+        
+        outputImage = UIImage.init(cgImage: cgImage!)
+    }
+    
+    func adjustImageColor(brightness: CGFloat, saturation: CGFloat, contrast: CGFloat) {
+        
+        self.filter = CIFilter.init(name: "CIColorControls")
         
     }
 }

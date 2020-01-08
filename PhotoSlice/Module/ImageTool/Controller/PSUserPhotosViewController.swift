@@ -101,6 +101,17 @@ class PSUserPhotosViewController: BaseCollectionViewController {
         
     }
     
+    private func dismissCurrent() {
+        
+        if self.presentingViewController != nil {
+            
+            self.dismiss(animated: true, completion: nil)
+        } else {
+            
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -297,7 +308,8 @@ private extension PSUserPhotosViewController {
                         
                         PNProgressHUD.hideLoading(from: nil)
                         
-                        self.navigationController?.setViewControllers([self.navigationController!.viewControllers.first!], animated: true)
+//                        self.navigationController?.setViewControllers([self.navigationController!.viewControllers.first!], animated: true)
+                        self.dismissCurrent()
                     }
                     
                 }

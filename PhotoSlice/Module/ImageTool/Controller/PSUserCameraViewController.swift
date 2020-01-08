@@ -37,6 +37,9 @@ class PSUserCameraViewController: BaseViewController {
         
         self.view.addSubview(self.cameraView)
         
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage(named: "fiter_icon"), style: .plain, target: self, action: #selector(didSelectFilter))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "关闭", style: .plain, target: self, action: #selector(dismissCurrent))
+        
     }
     
     //MARK: UISet
@@ -70,11 +73,36 @@ extension PSUserCameraViewController : PSCameraDelegate {
         
         DispatchQueue.main.async {
             
-            let controller = PSImageShotViewController()
-            controller.imageView.image = PSImageHandleManager.shared.getAspectFillWidthImage(image1: image, width: UIScreen.main.bounds.width * 0.8)
+            let image = PSImageHandleManager.shared.getAspectFillWidthImage(image1: image, width: UIScreen.main.bounds.width * 0.8)
             
-            self.popUpPresentViewController(viewController: controller, completion: nil)
+            let controller = PSImageShotViewController(originalImage: image)
+//            controller.imageView.image = image
+            controller.originalImage = image
+            
+            let nav = UINavigationController.init(rootViewController: controller)
+            
+            self.popUpPresentViewController(viewController: nav, completion: nil)
         }
+    }
+    
+    @objc private func didSelectFilter() {
+        
+//        let controller = PSImageFilterViewController { (filter) in
+//
+//            self.cameraView.filter = filter
+//        }
+//
+//        let nav = UINavigationController.init(rootViewController: controller)
+//
+//        self.customPresent(viewController: nav)
+        
+        cameraView.presentColorControlView()
+        
+    }
+    
+    @objc private func dismissCurrent() {
+        
+        self.dismiss(animated: true, completion: nil)
     }
     
 }

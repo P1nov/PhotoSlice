@@ -85,6 +85,7 @@ extension PSRootViewController : PSRootTabBarDelegate, PSOperationViewDelegate {
         
         let controller = PSUserCameraViewController()
         let nav = BaseNavigationController.init(rootViewController: controller)
+        nav.modalPresentationStyle = .fullScreen
         
         self.present(nav, animated: true, completion: nil)
     }

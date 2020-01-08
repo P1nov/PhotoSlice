@@ -16,6 +16,10 @@
 		046E1D2B23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */; };
 		046E1D2D23B5DAF0007A08DA /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E1D2C23B5DAF0007A08DA /* BaseNavigationController.swift */; };
 		0474BA7923C3336800FEFFB5 /* PSImageShotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0474BA7823C3336800FEFFB5 /* PSImageShotViewController.swift */; };
+		047624C123C41877001A8C9D /* PSImageFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047624C023C41877001A8C9D /* PSImageFilterViewController.swift */; };
+		047624C323C418B5001A8C9D /* PSImageFilterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047624C223C418B5001A8C9D /* PSImageFilterCollectionViewCell.swift */; };
+		047624C523C42C7E001A8C9D /* PSImageColorControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047624C423C42C7E001A8C9D /* PSImageColorControlView.swift */; };
+		047624C723C455AD001A8C9D /* PSImageEditToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047624C623C455AD001A8C9D /* PSImageEditToolBar.swift */; };
 		048B3E6423B48A160005EF26 /* PSImageHandleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6323B48A160005EF26 /* PSImageHandleManager.swift */; };
 		048B3E6623B490A90005EF26 /* PSUserAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6523B490A90005EF26 /* PSUserAlbumViewController.swift */; };
 		048B3E6B23B494750005EF26 /* LongImageSliceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048B3E6A23B494750005EF26 /* LongImageSliceViewController.swift */; };
@@ -81,6 +85,10 @@
 		046E1D2A23B5BBA6007A08DA /* PSLongImageSliceCompleteCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSLongImageSliceCompleteCollectionViewCell.swift; sourceTree = "<group>"; };
 		046E1D2C23B5DAF0007A08DA /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 		0474BA7823C3336800FEFFB5 /* PSImageShotViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSImageShotViewController.swift; sourceTree = "<group>"; };
+		047624C023C41877001A8C9D /* PSImageFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSImageFilterViewController.swift; sourceTree = "<group>"; };
+		047624C223C418B5001A8C9D /* PSImageFilterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSImageFilterCollectionViewCell.swift; sourceTree = "<group>"; };
+		047624C423C42C7E001A8C9D /* PSImageColorControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSImageColorControlView.swift; sourceTree = "<group>"; };
+		047624C623C455AD001A8C9D /* PSImageEditToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSImageEditToolBar.swift; sourceTree = "<group>"; };
 		048B3E6323B48A160005EF26 /* PSImageHandleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSImageHandleManager.swift; sourceTree = "<group>"; };
 		048B3E6523B490A90005EF26 /* PSUserAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSUserAlbumViewController.swift; sourceTree = "<group>"; };
 		048B3E6A23B494750005EF26 /* LongImageSliceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongImageSliceViewController.swift; sourceTree = "<group>"; };
@@ -186,6 +194,7 @@
 				0497151123B49BBB005F1D13 /* PSUserPhotosViewController.swift */,
 				04A7926923C31EAE00689BB5 /* PSUserCameraViewController.swift */,
 				0474BA7823C3336800FEFFB5 /* PSImageShotViewController.swift */,
+				047624C023C41877001A8C9D /* PSImageFilterViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -198,6 +207,9 @@
 				046E1D2823B59A19007A08DA /* PSOperationContentView.swift */,
 				049202B423B75366008A390A /* PSImageToolBar.swift */,
 				04A7926B23C31EE100689BB5 /* PSCameraView.swift */,
+				047624C223C418B5001A8C9D /* PSImageFilterCollectionViewCell.swift */,
+				047624C423C42C7E001A8C9D /* PSImageColorControlView.swift */,
+				047624C623C455AD001A8C9D /* PSImageEditToolBar.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -735,6 +747,8 @@
 				04FC194F23B3115D00F511CA /* AppDelegate.swift in Sources */,
 				04A7926A23C31EAE00689BB5 /* PSUserCameraViewController.swift in Sources */,
 				04FC198523B312CC00F511CA /* BaseViewController.swift in Sources */,
+				047624C123C41877001A8C9D /* PSImageFilterViewController.swift in Sources */,
+				047624C523C42C7E001A8C9D /* PSImageColorControlView.swift in Sources */,
 				0497151223B49BBB005F1D13 /* PSUserPhotosViewController.swift in Sources */,
 				048B3E6423B48A160005EF26 /* PSImageHandleManager.swift in Sources */,
 				04FC19AD23B3674700F511CA /* YDPresentationController.swift in Sources */,
@@ -742,8 +756,10 @@
 				04FC198C23B3140500F511CA /* UIImage+Extension.swift in Sources */,
 				04FC19A223B33E3800F511CA /* UIColor+Extension.swift in Sources */,
 				0497151423B49BD7005F1D13 /* PSUserPhotoCollectionViewCell.swift in Sources */,
+				047624C723C455AD001A8C9D /* PSImageEditToolBar.swift in Sources */,
 				04A7926C23C31EE100689BB5 /* PSCameraView.swift in Sources */,
 				04FC198823B3139700F511CA /* UINavigationBar+Extension.swift in Sources */,
+				047624C323C418B5001A8C9D /* PSImageFilterCollectionViewCell.swift in Sources */,
 				04FC199023B3161B00F511CA /* PSRootViewController.swift in Sources */,
 				045C5C2723B5F4220029E4A7 /* PNProgressHUD.swift in Sources */,
 			);
